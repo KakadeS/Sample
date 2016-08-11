@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -36,9 +38,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
     String TITLES[] = {"Home","Change Password","Logout"};
     int ICONS[] = {R.drawable.ic_photos,R.drawable.ic_photos,R.drawable.ic_photos,R.drawable.ic_photos,R.drawable.ic_photos};
     TextView orgName;
-    //Similarly we Create a String Resource for the name and email in the header view
-    //And we also create a int resource for profile picture in the header view
-
     String NAME = "xyz";
     String EMAIL = "xyz@gmail.com";
     int PROFILE = R.drawable.ic_photos;
@@ -50,36 +49,38 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     TextView signDiffUser;
-    ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
+    ActionBarDrawerToggle mDrawerToggle;
+    EditText editPassword;
+    // Declaring Action Bar Drawer Toggle
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        orgName= (TextView) findViewById(R.id.orgname);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
-        Intent intent=getIntent();
-        String email=intent.getStringExtra("email");
-        String device_id=intent.getStringExtra("device_id");
-        JSONObject requestParam=new JSONObject();
-        try {
-            requestParam.put("email",email);
-            requestParam.put("device_id",device_id);
-        } catch (JSONException e) {
-            String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
-            Log.e("sdcard-err2:",err);
+        final String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        Log.e("id is",device_id);
+        Cursor cursor = null;
+        String email = "";
+        try{
 
+            cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+            if(cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                email = cursor.getString(cursor.getColumnIndex("cust_email"));
+            }
+        }finally {
+
+            cursor.close();
         }
-
-
-        Log.e("req", String.valueOf(requestParam));
-        String loginURL = "http://eracord.com/users/get_organisations";
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL,requestParam, new Response.Listener<JSONObject>(){
+        String loginURL = "http://eracord.com/users/get_organisations.json?email=" + email + "&device_id=" + device_id;
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
+                String orgNameText=null;
                 try {
                     boolean success=response.getBoolean("success");
-                    String orgNameText = null;
+                    Spinner spinner = (Spinner) findViewById(R.id.spinner);
                     if(success)
                     {
                         boolean multiple_organisations=response.getBoolean("multiple_organisations");
@@ -90,11 +91,23 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                         }
                         if(multiple_organisations)
                         {
-                            Log.e("true","suxxx");
+
+                            spinner.setVisibility(View.VISIBLE);
+                            List<String> organisation = new ArrayList<String>();
+                               organisation.add("OrganizationOne");
+                                organisation.add("OrganizationTwo");
+                                organisation.add("OrganizationThree");
+                               ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, organisation);
+                              dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                               spinner.setAdapter(dataAdapter);
+
                         }
                         else {
-                            orgName.setVisibility(View.VISIBLE);
-                            orgName.setText(orgNameText);
+                            TextView org_name= (TextView) findViewById(R.id.org_id);
+                            org_name.setVisibility(View.VISIBLE);
+                            org_name.setText(orgNameText);
+                            spinner.setVisibility(View.GONE);
+
                         }
                     }
                 } catch (JSONException e) {
@@ -114,10 +127,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
         );
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
         setContentView(R.layout.activity_org);
-
-        // Spinner element
-
-     //   spinner.setPrompt("Select Org");
         signDiffUser= (TextView) findViewById(R.id.diffuser);
         signDiffUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,28 +141,67 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
 
             }
         });
-        // Spinner Drop down elements
-//        List<String> organisation = new ArrayList<String>();
-//        organisation.add("OrganizationOne");
-//        organisation.add("OrganizationTwo");
-//        organisation.add("OrganizationThree");
-
         spinBtn= (Button) findViewById(R.id.buttonLogin);
+        final String finalEmail = email;
+
+
         spinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(AndroidSpinnerExampleActivity.this,MainActivity.class);
-                startActivity(intent);
+                editPassword= (EditText) findViewById(R.id.editTextPassword);
+                final String user_password=editPassword.getText().toString();
+                Log.e("user",user_password);
+
+                JSONObject userObj=new JSONObject();
+                JSONObject user=new JSONObject();
+
+                try {
+                    userObj.put("email", finalEmail);
+                    userObj.put("device_id",device_id);
+                    userObj.put("mpin",user_password);
+                    user.put("user",userObj);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.e("user", String.valueOf(user));
+                String loginURL = "http://eracord.com/users/mpin_sign_in";
+
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL,user, new Response.Listener<JSONObject>(){
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success=response.getBoolean("success");
+                            if(success)
+                            {
+                                Intent intent=new Intent(AndroidSpinnerExampleActivity.this,ClassActivity.class);
+                                startActivity(intent);
+                            }
+
+
+                        } catch (JSONException e) {
+                            String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
+                            Log.e("sdcard-err2:",err);
+                        }
+
+                    }
+                },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("Volley", "Error");
+
+                            }
+                        }
+                );
+                VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
+
+
+
+//
             }
         });
-        // Creating adapter for spinner
-     //   ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, organisation);
 
-        // Drop down layout style - list view with radio button
-      //  dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-    //    spinner.setAdapter(dataAdapter);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 

@@ -23,6 +23,7 @@
         <activity android:name=".LoginPinActivity"></activity>
         <activity android:name=".DailyTeachingActivity"></activity>
         <activity android:name=".AndroidSpinnerExampleActivity"></activity>
+        <activity android:name=".ClassActivity"></activity>
 
         <provider
             android:name="com.example.vidhiraj.sample.User"
