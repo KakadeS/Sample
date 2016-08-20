@@ -32,7 +32,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
 
     Button login;
     String device_id;
-    String authorization_token;
+ //   String authorization_token;
     String email;
     Integer mpin;
     EditText uniqueUserPin, uniqueConfirmUserPin;
@@ -80,7 +80,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
         mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
         Intent intent = getIntent();
 
-        authorization_token = intent.getStringExtra("authorization_token");
+        ApiKeyConstant.authToken = intent.getStringExtra("authorization_token");
 
         email = intent.getStringExtra("email");
         Log.e("email is", email);
@@ -145,12 +145,12 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
 
 
             JSONObject userObj = new JSONObject();
-            userObj.put("authorization_token",authorization_token);
+            userObj.put("authorization_token",ApiKeyConstant.authToken);
             userObj.put("user", jo);
 
 
 
-            String loginURL = "http://eracord.com/users/mobile_sign_up";
+            String loginURL = ApiKeyConstant.apiUrl +"/users/mobile_sign_up";
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL, userObj, new Response.Listener<JSONObject>(){
                 @Override

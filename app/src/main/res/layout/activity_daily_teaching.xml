@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:layout_marginLeft="10dp"
-                    android:text="Organisation :"
+                    android:text="Chapters :"
                     android:textSize="20sp"
                     android:layout_marginBottom="5dp"/>
 
@@ -45,6 +45,9 @@
                     android:id="@+id/spinner"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="5dp"
+                    android:prompt="@string/chapter"
+                    android:spinnerMode="dialog"
+                    android:background="@android:color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -59,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:layout_marginLeft="10dp"
-                    android:text="Organisation :"
+                    android:text="Points :"
                     android:textSize="20sp"
                     android:layout_marginBottom="5dp"/>
                 <CheckBox

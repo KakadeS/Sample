@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Cursor cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+        Log.e("record is", String.valueOf(cursor.getCount()));
         if (cursor.getCount() != 0) {
             Intent intent = new Intent(MainActivity.this, AndroidSpinnerExampleActivity.class);
             startActivity(intent);
@@ -152,20 +153,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         userObj.put("user", jo);
 
 
-        String loginURL = "http://eracord.com/users/mobile_sign_in";
+        String loginURL = ApiKeyConstant.apiUrl +"/users/mobile_sign_in";
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL, userObj, new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     boolean success=response.getBoolean("success");
-                    String authorization_token=response.getString("token");
+                    ApiKeyConstant.authToken=response.getString("token");
 
 
                     if(success)
                     {
                         Intent intent = new Intent(MainActivity.this, LoginPinActivity.class);
                         intent.putExtra("email",user_email);
-                        intent.putExtra("authorization_token",authorization_token);
+                        intent.putExtra("authorization_token",ApiKeyConstant.authToken);
                         startActivity(intent);
                     }else {
                     }

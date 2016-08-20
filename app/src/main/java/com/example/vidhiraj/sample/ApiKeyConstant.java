@@ -5,5 +5,7 @@ package com.example.vidhiraj.sample;
  */
 public class ApiKeyConstant {
 
-    public static String device_id;
+    public static final String apiUrl="http://192.168.0.100:3000";
+    public static String authToken=null;
+
 }

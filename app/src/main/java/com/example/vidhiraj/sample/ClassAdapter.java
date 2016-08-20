@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -18,9 +22,16 @@ import java.util.ArrayList;
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder> {
 
     private ArrayList<ClassData> dataSet;
+    private Context mcontext;
+    public ClassAdapter(Context mcontext, ArrayList<ClassData> data) {
+        this.dataSet = data;
+        this.mcontext=mcontext;
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewName;
+        TextView textViewId;
         TextView textViewVersion;
         ImageView imageViewIcon;
         private Context context = null;
@@ -29,22 +40,24 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
             super(itemView);
             context = itemView.getContext();
             this.textViewName = (TextView) itemView.findViewById(R.id.textViewName);
+            this.textViewId = (TextView) itemView.findViewById(R.id.textViewid);
             this.textViewVersion = (TextView) itemView.findViewById(R.id.textViewVersion);
             this.imageViewIcon = (ImageView) itemView.findViewById(R.id.imageView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = getAdapterPosition();
+                    String id=textViewId.getText().toString();
+                    String token=ApiKeyConstant.authToken;
                     Intent intent=new Intent(context,DailyTeachingActivity.class);
+                    intent.putExtra("teach_id",id);
+                    intent.putExtra("auth_token",token);
                     context.startActivity(intent);
+
                 }
             });
         }
     }
 
-    public ClassAdapter(ArrayList<ClassData> data) {
-        this.dataSet = data;
-    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent,
@@ -59,11 +72,14 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         TextView textViewName = holder.textViewName;
+        TextView textViewId = holder.textViewId;
         TextView textViewVersion = holder.textViewVersion;
         ImageView imageView = holder.imageViewIcon;
 
+
         textViewName.setText(dataSet.get(position).getName());
-        textViewVersion.setText(dataSet.get(position).getVersion());
+        textViewVersion.setText(dataSet.get(position).getSubject());
+        textViewId.setText(Integer.toString(dataSet.get(position).getId()));
         imageView.setImageResource(dataSet.get(position).getImage());
     }
 

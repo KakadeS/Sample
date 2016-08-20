@@ -54,9 +54,18 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
-
-                    android:text="Android Version"
+                    android:text="Subject"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <TextView
+                    android:id="@+id/textViewid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:text="id"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
 
             </LinearLayout>
         </LinearLayout>

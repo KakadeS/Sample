@@ -63,7 +63,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         ImageView imageView = holder.imageViewIcon;
 
         textViewName.setText(dataSet.get(position).getName());
-        textViewVersion.setText(dataSet.get(position).getVersion());
+        textViewVersion.setText(dataSet.get(position).getSubject());
         imageView.setImageResource(dataSet.get(position).getImage());
     }
 

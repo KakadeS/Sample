@@ -73,7 +73,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
 
             cursor.close();
         }
-        String loginURL = "http://eracord.com/users/get_organisations.json?email=" + email + "&device_id=" + device_id;
+        String loginURL = ApiKeyConstant.apiUrl + "/users/get_organisations.json?email=" + email + "&device_id=" + device_id;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
@@ -91,7 +91,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                         }
                         if(multiple_organisations)
                         {
-
                             spinner.setVisibility(View.VISIBLE);
                             List<String> organisation = new ArrayList<String>();
                                organisation.add("OrganizationOne");
@@ -165,7 +164,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Log.e("user", String.valueOf(user));
-                String loginURL = "http://eracord.com/users/mpin_sign_in";
+                String loginURL = ApiKeyConstant.apiUrl +"/users/mpin_sign_in";
 
                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL,user, new Response.Listener<JSONObject>(){
                     @Override
@@ -174,7 +173,9 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                             boolean success=response.getBoolean("success");
                             if(success)
                             {
+                                ApiKeyConstant.authToken=response.getString("token");
                                 Intent intent=new Intent(AndroidSpinnerExampleActivity.this,ClassActivity.class);
+                                intent.putExtra("token",ApiKeyConstant.authToken);
                                 startActivity(intent);
                             }
 
@@ -195,10 +196,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                         }
                 );
                 VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
-
-
-
-//
             }
         });
 
