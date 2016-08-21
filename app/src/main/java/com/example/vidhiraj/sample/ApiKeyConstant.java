@@ -5,7 +5,7 @@ package com.example.vidhiraj.sample;
  */
 public class ApiKeyConstant {
 
-    public static final String apiUrl="http://192.168.0.100:3000";
+    public static final String apiUrl="http://eracord.com";
     public static String authToken=null;
 
 }

@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,6 +57,9 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
     ActionBarDrawerToggle mDrawerToggle;
     List<Integer> chapter_array = new ArrayList<Integer>();
     String classid;
+    Button createCatalog;
+    LinearLayout linearpoints;
+    Integer chapter_id = null;
     // Declaring Action Bar Drawer Toggle
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -70,6 +77,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         String token = intent.getStringExtra("auth_token");
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
+        createCatalog= (Button) findViewById(R.id.buttonCreate);
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes/" + classid + "/get_chapters.json?authorization_token=" + token;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, loginURL, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
@@ -82,7 +90,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
                         JSONArray jsonArray = response.getJSONArray("chapters");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject chapterObj = jsonArray.getJSONObject(i);
-                            chapter_array.add(chapterObj.getInt("id"));
+                             chapter_array.add(chapterObj.getInt("id"));
                              categories.add(chapterObj.getString("name"));
 
                         }
@@ -108,7 +116,67 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         );
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
+        createCatalog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                StringBuilder buff = new StringBuilder();
+                String sep = "";
+                List<PointsData> stList = ((PointsAdapter) mAdapter)
+                        .getStudentist();
+                for (int i = 0; i < stList.size(); i++) {
+                    PointsData singleStudent = stList.get(i);
+                    if (singleStudent.isSelected() == true) {
+                        buff.append(sep);
+                        buff.append(singleStudent.getPointId());
+                        sep = ",";
+                        Log.e("buff is", String.valueOf(buff));
+
+                    }
+                }
+
+                JSONObject daily_teaching_point = new JSONObject();
+                JSONObject userObj=new JSONObject();
+                try {
+                    daily_teaching_point.put("chapter_id",chapter_id);
+                    daily_teaching_point.put("chapters_point_id",buff);
+                    daily_teaching_point.put("date",new Date());
+                    userObj.put("daily_teaching_point",daily_teaching_point);
+                    Log.e("daily_teach", String.valueOf(daily_teaching_point));
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+                }
+
+                String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes/" + classid +"/daily_teachs?authorization_token=" + ApiKeyConstant.authToken;
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, loginURL,userObj, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success = response.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(getBaseContext(), "Daily Catalog Saved", Toast.LENGTH_LONG).show();
+                                Intent intent1=new Intent(DailyTeachingActivity.this,ClassActivity.class);
+                                startActivity(intent1);
+                            }
+
+                        } catch (JSONException e) {
+                            String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
+                            Log.e("sdcard-err2:", err);
+                        }
+
+                    }
+                },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getBaseContext(), "Daily Catalog Not Saved", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                );
+                VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
+            }
+        });
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -220,7 +288,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Integer chapter_id = null;
+
         String item=null;
         Intent intent=getIntent();
         classid= intent.getStringExtra("teach_id");
@@ -228,7 +296,9 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         {
             item= parent.getItemAtPosition(position).toString();
             chapter_id=chapter_array.get(j);
+            Log.e("for chap_id", String.valueOf(chapter_id));
         }
+        Log.e(" out chap_id", String.valueOf(chapter_id));
 
         Log.e("getpoints", String.valueOf(classid));
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes/" + classid + "/chapters/" + chapter_id + "/get_points.json?authorization_token=" + ApiKeyConstant.authToken;
@@ -236,11 +306,24 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    linearpoints= (LinearLayout) findViewById(R.id.pointslinear);
                     boolean success = response.getBoolean("success");
+                    List<PointsData> pointsList = new ArrayList<PointsData>();
                     if (success) {
-                      Log.e("sss","yes");
+                        JSONArray jsonArray = response.getJSONArray("points");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject pointsObj = jsonArray.getJSONObject(i);
+                            PointsData points=new PointsData(pointsObj.getString("name"),false,pointsObj.getInt("id"));
+                            pointsList.add(points);
+                            Log.e("points are", String.valueOf(pointsList));
+                        }
                     }
 
+                    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+                    mRecyclerView.setHasFixedSize(true);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(DailyTeachingActivity.this));
+                    mAdapter = new PointsAdapter(pointsList);
+                    mRecyclerView.setAdapter(mAdapter);
                 } catch (JSONException e) {
                     String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
                     Log.e("sdcard-err2:", err);

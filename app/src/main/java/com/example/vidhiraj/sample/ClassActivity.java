@@ -2,6 +2,7 @@ package com.example.vidhiraj.sample;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnMenuTabSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,13 +36,14 @@ public class ClassActivity extends AppCompatActivity {
     private static RecyclerView.Adapter adapter;
     private static RecyclerView recyclerView;
     private static ArrayList<ClassData> data=null;
+    private  static ArrayList<DailyTeachData> dailyTeach=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_class);
         Intent intent=getIntent();
-        ApiKeyConstant.authToken=intent.getStringExtra("token");
-        Log.e("token is",ApiKeyConstant.authToken);
+      //  ApiKeyConstant.authToken=intent.getStringExtra("token");
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes.json?authorization_token=" + ApiKeyConstant.authToken;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
@@ -79,12 +83,36 @@ public class ClassActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
                         Log.e("Volley", "Error");
                     }
                 }
         );
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
-        setContentView(R.layout.activity_class);
+        BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
+        bottomBar.setItemsFromMenu(R.menu.main_menu, new OnMenuTabSelectedListener() {
+            @Override
+            public void onMenuItemSelected(int itemId) {
+                switch (itemId) {
+                    case R.id.recent_item:
+                        break;
+                    case R.id.favorite_item:
+                        break;
+                    case R.id.location_item:
+                           Intent intent=new Intent(ClassActivity.this,DailyCatalogActivity.class);
+                           startActivity(intent);
+
+
+                        break;
+                }
+            }
+        });
+
+        // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
+        bottomBar.setActiveTabColor("#C2185B");
+
+
+
     }
 
 }

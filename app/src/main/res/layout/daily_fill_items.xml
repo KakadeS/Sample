@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    card_view:cardCornerRadius="5dp"
+
+    card_view:cardUseCompatPadding="true" >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/standard"
+            android:layout_width="0dp"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Street"
+            android:layout_gravity="left" />
+
+        <TextView
+            android:id="@+id/chapter"
+            android:layout_width="0dp"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="456546546"
+            android:layout_gravity="right" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Street"
+            android:layout_gravity="left" />
+
+        <TextView
+            android:id="@+id/points"
+            android:layout_width="0dp"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="456546546"
+            android:layout_gravity="right" />
+
+    </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
