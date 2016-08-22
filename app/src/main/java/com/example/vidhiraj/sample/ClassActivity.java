@@ -93,13 +93,16 @@ public class ClassActivity extends AppCompatActivity {
         bottomBar.setItemsFromMenu(R.menu.main_menu, new OnMenuTabSelectedListener() {
             @Override
             public void onMenuItemSelected(int itemId) {
+                Intent intent;
                 switch (itemId) {
                     case R.id.recent_item:
                         break;
                     case R.id.favorite_item:
+                          intent=new Intent(ClassActivity.this,StudentListActivity.class);
+                          startActivity(intent);
                         break;
                     case R.id.location_item:
-                           Intent intent=new Intent(ClassActivity.this,DailyCatalogActivity.class);
+                           intent=new Intent(ClassActivity.this,DailyCatalogActivity.class);
                            startActivity(intent);
 
 

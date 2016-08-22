@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/linearLayout2"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/dailycat"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="30dp"
+        android:gravity="center"
+        android:text="Daily Catalog History"/>
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:id="@+id/date"
+       android:layout_marginTop="10dp"
+       android:textSize="20dp"
+       android:layout_height="wrap_content"
+       android:text="hiii"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:id="@+id/chapter"
+        android:text="hiii"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:id="@+id/points"
+        android:text="hiii"/>
+</LinearLayout>

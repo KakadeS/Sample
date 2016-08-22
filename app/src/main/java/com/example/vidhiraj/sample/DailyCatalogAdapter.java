@@ -30,6 +30,7 @@ public class DailyCatalogAdapter extends RecyclerView.Adapter<DailyCatalogAdapte
         TextView textViewChapter;
         TextView textViewDate;
         TextView textViewPoints;
+        TextView textViewId;
         private Context context = null;
 
         public MyViewHolder(final View itemView) {
@@ -39,20 +40,21 @@ public class DailyCatalogAdapter extends RecyclerView.Adapter<DailyCatalogAdapte
             this.textViewChapter = (TextView) itemView.findViewById(R.id.chapter);
             this.textViewDate = (TextView) itemView.findViewById(R.id.date);
             this.textViewPoints = (TextView) itemView.findViewById(R.id.points);
+            this.textViewId = (TextView) itemView.findViewById(R.id.dailyid);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-//                    String id=textViewId.getText().toString();
-//                    String token=ApiKeyConstant.authToken;
-//                    Intent intent=new Intent(context,DailyTeachingActivity.class);
-//                    intent.putExtra("teach_id",id);
-//                    intent.putExtra("auth_token",token);
-//                    context.startActivity(intent);
+                    String id=textViewId.getText().toString();
+                    Intent intent=new Intent(context,HistoryCatalogActivity.class);
+                    intent.putExtra("daily_id",id);
+                    context.startActivity(intent);
 
                 }
             });
         }
+
+
     }
 
 
@@ -72,10 +74,12 @@ public class DailyCatalogAdapter extends RecyclerView.Adapter<DailyCatalogAdapte
         TextView textViewChapter = holder.textViewChapter;
         TextView textViewDate = holder.textViewDate;
         TextView textViewPoints = holder.textViewPoints;
+        TextView textViewId = holder.textViewId;
         textViewClass.setText(dataSet.get(position).getStandard());
         textViewChapter.setText(dataSet.get(position).getChapter());
         textViewDate.setText(dataSet.get(position).getDate());
         textViewPoints.setText(dataSet.get(position).getPoints());
+        textViewId.setText(Integer.toString(dataSet.get(position).getId()));
     }
 
     @Override

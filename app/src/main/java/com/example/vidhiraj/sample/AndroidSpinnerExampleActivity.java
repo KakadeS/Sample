@@ -74,6 +74,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
             cursor.close();
         }
         String loginURL = ApiKeyConstant.apiUrl + "/users/get_organisations.json?email=" + email + "&device_id=" + device_id;
+        Log.e("url",loginURL);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {

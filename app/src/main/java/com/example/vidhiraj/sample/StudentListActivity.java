@@ -19,44 +19,42 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by lenovo on 21/08/2016.
+ * Created by lenovo on 22/08/2016.
  */
-public class DailyCatalogActivity extends AppCompatActivity {
+public class StudentListActivity extends AppCompatActivity {
 
     private static RecyclerView.Adapter adapter;
     private static RecyclerView recyclerView;
-    private  static ArrayList<DailyTeachData> dailyTeach=null;
+    private  static ArrayList<StudentData> dailyTeach=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.daily_fill_catalog);
-        String loginURL = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs?authorization_token=" + ApiKeyConstant.authToken;
+        setContentView(R.layout.student_catalog);
+        String loginURL = ApiKeyConstant.apiUrl + "/api/v1/students?authorization_token=" + ApiKeyConstant.authToken;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
-                dailyTeach=new ArrayList<DailyTeachData>();
+                dailyTeach=new ArrayList<StudentData>();
                 try {
                     boolean success=response.getBoolean("success");
                     if(success)
                     {
-                        JSONArray jsonArray = response.getJSONArray("daily_teaching_points");
+                        JSONArray jsonArray = response.getJSONArray("students");
                         for (int i=0; i<jsonArray.length(); i++) {
                             JSONObject orgObj = jsonArray.getJSONObject(i);
-                            DailyTeachData dailyData = new DailyTeachData();
-                            dailyData.standard= orgObj.getString("jkci_class");
-                            dailyData.chapter= orgObj.getString("chapter");
-                            dailyData.date=orgObj.getString("date");
-                            dailyData.points=orgObj.getString("points");
-                            dailyData.id=orgObj.getInt("id");
+                            StudentData dailyData = new StudentData();
+                            dailyData.stud_name= orgObj.getString("name");
+                            dailyData.stud_class_name= orgObj.getString("class_names");
+                            dailyData.stud_hostel=orgObj.getBoolean("has_hostel");
                             dailyTeach.add(dailyData);
                         }
                     }
 
                     recyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
                     recyclerView.setHasFixedSize(true);
-                    adapter = new DailyCatalogAdapter(DailyCatalogActivity.this, dailyTeach);
+                    adapter = new StudentCatalogAdapter(StudentListActivity.this, dailyTeach);
                     recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(DailyCatalogActivity.this));
+                    recyclerView.setLayoutManager(new LinearLayoutManager(StudentListActivity.this));
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
 
                 } catch (JSONException e) {
