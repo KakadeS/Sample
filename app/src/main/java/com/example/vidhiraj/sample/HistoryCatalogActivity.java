@@ -38,7 +38,7 @@ public class HistoryCatalogActivity extends AppCompatActivity {
         String id=intent.getStringExtra("daily_id");
         Log.e("id is",id);
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/" + id +"?authorization_token=" + ApiKeyConstant.authToken;
-       Log.e("daily url",loginURL);
+        Log.e("daily url",loginURL);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
@@ -46,7 +46,8 @@ public class HistoryCatalogActivity extends AppCompatActivity {
                     boolean success=response.getBoolean("success");
                     if(success)
                     {
-                          JSONObject daily_teach=response.getJSONObject("daily_teaching_point");
+
+                        JSONObject daily_teach=response.getJSONObject("daily_teaching_point");
                         daily_catalog_date.setText(daily_teach.getString("date"));
                         daily_catalog_chapter.setText(daily_teach.getString("chapter"));
                         daily_catalog_points.setText(daily_teach.getString("points"));

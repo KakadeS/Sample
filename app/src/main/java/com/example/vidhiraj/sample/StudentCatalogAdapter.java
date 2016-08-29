@@ -1,86 +1,160 @@
 package com.example.vidhiraj.sample;
 
 import android.content.Context;
-import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by lenovo on 22/08/2016.
+ * Created by lenovo on 25/08/2016.
  */
-public class StudentCatalogAdapter  extends RecyclerView.Adapter<StudentCatalogAdapter.MyViewHolder> {
+public class StudentCatalogAdapter extends RecyclerView.Adapter {
+    private final int VIEW_ITEM = 1;
+    private final int VIEW_PROG = 0;
 
-    private ArrayList<StudentData> dataSet;
-    private Context mcontext;
-    public StudentCatalogAdapter(Context mcontext, ArrayList<StudentData> data) {
-        this.dataSet = data;
-        this.mcontext=mcontext;
-    }
+    private List<StudentData> studentList;
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    // The minimum amount of items to have below your current scroll position
+    // before loading more.
+    private int visibleThreshold = 5;
+    private int lastVisibleItem, totalItemCount;
+    private boolean loading;
+    private OnLoadMoreListener onLoadMoreListener;
 
-        TextView textViewName;
-        TextView textViewClass;
-        TextView textViewHostel;
-        private Context context = null;
 
-        public MyViewHolder(final View itemView) {
-            super(itemView);
-            context = itemView.getContext();
-            this.textViewName = (TextView) itemView.findViewById(R.id.stud_name);
-            this.textViewClass = (TextView) itemView.findViewById(R.id.stud_class);
-            this.textViewHostel = (TextView) itemView.findViewById(R.id.stud_hostel);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                }
-            });
+    public StudentCatalogAdapter(List<StudentData> students, RecyclerView recyclerView) {
+        studentList = students;
+
+        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView
+                    .getLayoutManager();
+
+
+            recyclerView
+                    .addOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView,
+                                               int dx, int dy) {
+                            super.onScrolled(recyclerView, dx, dy);
+
+                            totalItemCount = linearLayoutManager.getItemCount();
+                            lastVisibleItem = linearLayoutManager
+                                    .findLastVisibleItemPosition();
+                            if (!loading
+                                    && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                                // End has been reached
+                                // Do something
+                                if (onLoadMoreListener != null) {
+                                    onLoadMoreListener.onLoadMore();
+                                }
+                                loading = true;
+                            }
+                        }
+                    });
         }
-
-
     }
-
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                           int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.student_catalog_item, parent, false);
-
-        MyViewHolder myViewHolder = new MyViewHolder(view);
-        return myViewHolder;
+    public int getItemViewType(int position) {
+        return studentList.get(position) != null ? VIEW_ITEM : VIEW_PROG;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        TextView textViewName= holder.textViewName;
-        TextView textViewClass = holder.textViewClass;
-        TextView textViewHostel = holder.textViewHostel;
-        textViewName.setText(dataSet.get(position).getStud_name());
-        textViewClass.setText(dataSet.get(position).getStud_class_name());
-        boolean hostel=dataSet.get(position).stud_hostel;
-        if(hostel)
-        {
-            textViewHostel.setText("yes");
-        }
-        else {
-            textViewHostel.setText("no");
-        }
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                      int viewType) {
+        RecyclerView.ViewHolder vh;
+        if (viewType == VIEW_ITEM) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.student_catalog_item, parent, false);
 
+            vh = new StudentViewHolder(v);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.progressbar_item, parent, false);
+
+            vh = new ProgressViewHolder(v);
+        }
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof StudentViewHolder) {
+
+            StudentData singleStudent= (StudentData) studentList.get(position);
+
+            ((StudentViewHolder) holder).textViewName.setText(singleStudent.getStud_name());
+
+            ((StudentViewHolder) holder).textViewClass.setText(singleStudent.getStud_class_name());
+
+            ((StudentViewHolder) holder).student= singleStudent;
+            boolean hostel=singleStudent.stud_hostel;
+            if(hostel)
+            {
+                ((StudentViewHolder) holder).textViewHostel.setText("yes");
+            }
+            else {
+                ((StudentViewHolder) holder).textViewHostel.setText("no");
+            }
+
+
+        } else {
+            ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
+        }
+    }
+
+    public void setLoaded() {
+        loading = false;
     }
 
     @Override
     public int getItemCount() {
-        Log.e("size is", String.valueOf(dataSet.size()));
-        return dataSet.size();
+        return studentList.size();
     }
 
-}
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        this.onLoadMoreListener = onLoadMoreListener;
+    }
+    public static class StudentViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewName;
+        TextView textViewClass;
+        TextView textViewHostel;
+        private Context context = null;
+        public StudentData student;
 
+        public StudentViewHolder(View v) {
+            super(v);
+            context = itemView.getContext();
+            this.textViewName = (TextView) itemView.findViewById(R.id.stud_name);
+            this.textViewClass = (TextView) itemView.findViewById(R.id.stud_class);
+            this.textViewHostel = (TextView) itemView.findViewById(R.id.stud_hostel);
+
+            v.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+
+                }
+            });
+        }
+    }
+
+    public static class ProgressViewHolder extends RecyclerView.ViewHolder {
+        public ProgressBar progressBar;
+
+        public ProgressViewHolder(View v) {
+            super(v);
+            progressBar = (ProgressBar) v.findViewById(R.id.progressBar1);
+        }
+    }
+}
