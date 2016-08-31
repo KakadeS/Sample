@@ -71,7 +71,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_teaching);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         classid= intent.getStringExtra("teach_id");
         Log.e("getchap", String.valueOf(classid));
         String token = intent.getStringExtra("auth_token");
@@ -155,8 +155,13 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
                         try {
                             boolean success = response.getBoolean("success");
                             if (success) {
+                                int id=response.getInt("dtp_id");
+                                String dtp_id= String.valueOf(id);
+                                Log.e("dtp id", String.valueOf(dtp_id));
                                 Toast.makeText(getBaseContext(), "Daily Catalog Saved", Toast.LENGTH_LONG).show();
-                                Intent intent1=new Intent(DailyTeachingActivity.this,ClassActivity.class);
+                                Intent intent1=new Intent(DailyTeachingActivity.this,PresentyCatalog.class);
+                                intent1.putExtra("dtp_id",dtp_id);
+                                Log.e("put extra dtp", String.valueOf(dtp_id));
                                 startActivity(intent1);
                             }
 

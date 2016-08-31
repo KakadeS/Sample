@@ -59,6 +59,10 @@
             android:name=".StudentListActivity"
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation"
             android:screenOrientation="unspecified"></activity>
+        <activity
+            android:name=".PresentyCatalog"
+            android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="unspecified"></activity>
 
         <provider
             android:name="com.example.vidhiraj.sample.User"
