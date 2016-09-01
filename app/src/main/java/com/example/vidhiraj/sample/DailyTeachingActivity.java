@@ -57,7 +57,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
     ActionBarDrawerToggle mDrawerToggle;
     List<Integer> chapter_array = new ArrayList<Integer>();
     String classid;
-    Button createCatalog;
+    Button createCatalog,cancelCatalog;
     LinearLayout linearpoints;
     Integer chapter_id = null;
     // Declaring Action Bar Drawer Toggle
@@ -78,6 +78,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         createCatalog= (Button) findViewById(R.id.buttonCreate);
+        cancelCatalog= (Button) findViewById(R.id.buttonCancel);
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes/" + classid + "/get_chapters.json?authorization_token=" + token;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, loginURL, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
@@ -115,6 +116,14 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
                 }
         );
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
+
+        cancelCatalog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1=new Intent(DailyTeachingActivity.this,ClassActivity.class);
+                startActivity(intent1);
+            }
+        });
 
         createCatalog.setOnClickListener(new View.OnClickListener() {
             @Override

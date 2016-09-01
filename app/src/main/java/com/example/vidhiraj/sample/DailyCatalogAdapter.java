@@ -138,8 +138,8 @@ public class DailyCatalogAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     String id=textViewId.getText().toString();
-                    Intent intent=new Intent(context,HistoryCatalogActivity.class);
-                    intent.putExtra("daily_id",id);
+                    Intent intent=new Intent(context,PresentyCatalog.class);
+                    intent.putExtra("dtp_id",id);
                     context.startActivity(intent);
                 }
             });
