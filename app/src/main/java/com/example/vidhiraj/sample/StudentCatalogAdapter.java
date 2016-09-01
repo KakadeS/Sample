@@ -27,40 +27,41 @@ public class StudentCatalogAdapter extends RecyclerView.Adapter {
     private int lastVisibleItem, totalItemCount;
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
+Context context;
 
 
-
-    public StudentCatalogAdapter(List<StudentData> students, RecyclerView recyclerView) {
+    public StudentCatalogAdapter(List<StudentData> students,Context context) {
         studentList = students;
+        this.context=context;
 
-        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-
-            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView
-                    .getLayoutManager();
-
-
-            recyclerView
-                    .addOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView,
-                                               int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-
-                            totalItemCount = linearLayoutManager.getItemCount();
-                            lastVisibleItem = linearLayoutManager
-                                    .findLastVisibleItemPosition();
-                            if (!loading
-                                    && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                                // End has been reached
-                                // Do something
-                                if (onLoadMoreListener != null) {
-                                    onLoadMoreListener.onLoadMore();
-                                }
-                                loading = true;
-                            }
-                        }
-                    });
-        }
+//        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+//
+//            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView
+//                    .getLayoutManager();
+//
+//
+//            recyclerView
+//                    .addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                        @Override
+//                        public void onScrolled(RecyclerView recyclerView,
+//                                               int dx, int dy) {
+//                            super.onScrolled(recyclerView, dx, dy);
+//
+//                            totalItemCount = linearLayoutManager.getItemCount();
+//                            lastVisibleItem = linearLayoutManager
+//                                    .findLastVisibleItemPosition();
+//                            if (!loading
+//                                    && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+//                                // End has been reached
+//                                // Do something
+//                                if (onLoadMoreListener != null) {
+//                                    onLoadMoreListener.onLoadMore();
+//                                }
+//                                loading = true;
+//                            }
+//                        }
+//                    });
+//        }
     }
 
     @Override
