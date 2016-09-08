@@ -191,6 +191,10 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
                 VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
             }
         });
+
+
+
+
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);

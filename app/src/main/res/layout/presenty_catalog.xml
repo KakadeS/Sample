@@ -17,4 +17,24 @@
         android:scrollbars="vertical"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:id="@+id/savepresenty"
+        android:layout_alignTop="@+id/button"
+        android:layout_toLeftOf="@+id/button"
+        android:layout_toStartOf="@+id/button" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CANCEL"
+        android:id="@+id/button"
+        android:layout_marginRight="69dp"
+        android:layout_marginEnd="69dp"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/my_recycler_view"
+        android:layout_alignEnd="@+id/my_recycler_view" />
 </RelativeLayout>

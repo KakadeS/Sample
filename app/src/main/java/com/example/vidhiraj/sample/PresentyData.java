@@ -14,6 +14,15 @@ public class PresentyData implements Serializable {
 
     private String name;
     private int pointId;
+
+    public int getPointId() {
+        return pointId;
+    }
+
+    public void setPointId(int pointId) {
+        this.pointId = pointId;
+    }
+
     private boolean isSelected;
 
     public PresentyData() {

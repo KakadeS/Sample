@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,19 +44,31 @@ public class PresentyAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 
         final int pos = position;
-
+     //   final ObjectIncome objIncome = myItems.get(position);
         viewHolder.tvName.setText(stList.get(position).getName());
+      //  viewHolder.chkSelected.setChecked(stList.get(position).isSelected());
+      //  viewHolder.chkSelected.setTag(stList.get(position));
 
+
+
+
+
+        //in some cases, it will prevent unwanted situations
+        viewHolder.chkSelected.setOnCheckedChangeListener(null);
+
+        //if true, your checkbox will be selected, else unselected
         viewHolder.chkSelected.setChecked(stList.get(position).isSelected());
 
-        viewHolder.chkSelected.setTag(stList.get(position));
-
-
-
-
+        viewHolder.chkSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //set your object's last status
+                stList.get(position).setSelected(isChecked);
+            }
+        });
 
     }
 
@@ -68,7 +82,6 @@ public class PresentyAdapter extends
 
         public TextView tvName;
         public TextView tvEmailId;
-
         public CheckBox chkSelected;
 
         public PointsData singlestudent;
@@ -80,6 +93,8 @@ public class PresentyAdapter extends
 
             chkSelected = (CheckBox) itemLayoutView
                     .findViewById(R.id.chkSelected);
+
+
 
         }
 
