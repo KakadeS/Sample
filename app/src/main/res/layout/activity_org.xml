@@ -10,6 +10,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="fill_parent"
+        android:background="#CCFFFF"
         android:layout_height="fill_parent">
 
         <include
@@ -29,6 +30,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="10dp"
                 android:text="Organisation :"
+                android:textColor="@color/textcolor"
                 android:textSize="20sp"
                 android:layout_marginBottom="5dp"/>
 
@@ -48,6 +50,7 @@
                     android:layout_marginLeft="10dp"
                     android:text="Organisation :"
                     android:textSize="20sp"
+                    android:textColor="@color/textcolor"
                     android:layout_marginBottom="5dp"/>
             <Spinner
                 android:id="@+id/spinner"
@@ -70,6 +73,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/textcolor"
                 android:hint="4 digit Pin"/>
         </android.support.design.widget.TextInputLayout>
         <Button
@@ -92,6 +97,7 @@
             android:textSize="20sp"
             android:layout_gravity="center"
             android:gravity="center"
+            android:textColor="@color/textcolor"
             android:text="Sign in With Different User?"
             android:clickable="true"/>
 

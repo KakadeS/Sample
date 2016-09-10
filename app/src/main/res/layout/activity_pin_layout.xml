@@ -9,6 +9,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="#CCFFFF"
         android:orientation="vertical">
 
 
@@ -23,6 +24,7 @@
             android:text="Generate mPin"
             android:layout_gravity="center"
             android:gravity="center"
+            android:textColor="@color/textcolor"
             android:layout_marginTop="40dp"
             android:textSize="30dp"></TextView>
 
@@ -37,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter the Pin"
+                android:textColor="@color/textcolor"
                 android:inputType="numberPassword"
                 android:textStyle="bold" />
         </android.support.design.widget.TextInputLayout>
@@ -53,6 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Confirm Pin"
+                android:textColor="@color/textcolor"
                 android:inputType="numberPassword"
                 android:textStyle="bold" />
         </android.support.design.widget.TextInputLayout>
@@ -63,6 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:gravity="center"
+            android:textColor="@color/textcolor"
             android:layout_gravity="center"
             android:background="@drawable/button_shape"
             android:clickable="true"

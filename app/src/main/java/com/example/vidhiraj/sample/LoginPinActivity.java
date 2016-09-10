@@ -128,10 +128,13 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
 
 
     public void validateCheck() throws JSONException {
+        Log.e("validate chaeck","entry");
         if (!validate()) {
             onLoginFailed();
             return;
         } else {
+
+            Log.e("success","done");
 
             String mpinString=uniqueConfirmUserPin.getText().toString();
             mpin= Integer.parseInt(mpinString);
@@ -147,8 +150,6 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
             JSONObject userObj = new JSONObject();
             userObj.put("authorization_token",ApiKeyConstant.authToken);
             userObj.put("user", jo);
-
-
 
             String loginURL = ApiKeyConstant.apiUrl +"/users/mobile_sign_up";
 
@@ -184,11 +185,6 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
             );
             VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
-
-
-
-
-
         }
         }
 
@@ -198,11 +194,13 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public boolean validate() {
+        Log.e("next validate","entry");
         boolean valid = true;
         String userpin = uniqueUserPin.getText().toString();
         String confirmpin=uniqueConfirmUserPin.getText().toString();
-        if (userpin.isEmpty() || userpin.length() > 4) {
+        if (userpin.length()!=4) {
             uniqueUserPin.setError("enter only 4 digit pin");
+            Log.e("user pin size","false");
             valid = false;
         } else {
             if(!userpin.equals(confirmpin)) {

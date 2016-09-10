@@ -1,40 +1,44 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity"
-    android:background="#50FF4081"
+    android:orientation="vertical"
+    android:weightSum="2"
+    android:background="#CCFFFF"
     >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:scrollbars="vertical"
         />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="SAVE"
+        android:layout_marginLeft="10dp"
         android:id="@+id/savepresenty"
-        android:layout_alignTop="@+id/button"
-        android:layout_toLeftOf="@+id/button"
-        android:layout_toStartOf="@+id/button" />
+        android:textColor="@color/textcolor"
+        android:background="@drawable/button_shape"
+       />
 
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="CANCEL"
+        android:layout_marginLeft="10dp"
         android:id="@+id/button"
-        android:layout_marginRight="69dp"
-        android:layout_marginEnd="69dp"
-        android:layout_centerVertical="true"
-        android:layout_alignRight="@+id/my_recycler_view"
-        android:layout_alignEnd="@+id/my_recycler_view" />
-</RelativeLayout>
+        android:textColor="@color/textcolor"
+        android:background="@drawable/button_shape"
+      />
+        </LinearLayout>
+</LinearLayout>

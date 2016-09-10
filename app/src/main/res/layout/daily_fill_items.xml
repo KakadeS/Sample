@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     card_view:cardCornerRadius="5dp"
-
     card_view:cardUseCompatPadding="true" >
 <LinearLayout
     android:layout_width="match_parent"
@@ -22,8 +21,8 @@
         <TextView
             android:id="@+id/standard"
             android:layout_width="0dp"
-            android:textColor="#000000"
             android:textSize="15dp"
+            android:textColor="@color/textcolor"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Street"
@@ -32,7 +31,7 @@
         <TextView
             android:id="@+id/chapter"
             android:layout_width="0dp"
-            android:textColor="#000000"
+            android:textColor="@color/textcolor"
             android:textSize="15dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -48,7 +47,7 @@
         <TextView
             android:id="@+id/date"
             android:layout_width="0dp"
-            android:textColor="#000000"
+            android:textColor="@color/textcolor"
             android:textSize="15dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -58,7 +57,7 @@
         <TextView
             android:id="@+id/points"
             android:layout_width="0dp"
-            android:textColor="#000000"
+            android:textColor="@color/textcolor"
             android:textSize="15dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -68,7 +67,7 @@
         <TextView
             android:id="@+id/dailyid"
             android:layout_width="0dp"
-            android:textColor="#000000"
+            android:textColor="@color/textcolor"
             android:textSize="15dp"
             android:visibility="gone"
             android:layout_weight="1"

@@ -11,6 +11,7 @@
         android:layout_height="wrap_content">
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
+            android:background="#CCFFFF"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
@@ -38,6 +39,7 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginLeft="10dp"
                     android:text="Chapters :"
+                    android:textColor="@color/textcolor"
                     android:textSize="20sp"
                     android:layout_marginBottom="5dp"/>
 
@@ -80,7 +82,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_shape"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textcolor"
                     android:layout_marginTop="50dp"
                     android:clickable="true"
                     android:layout_marginLeft="20dp"
@@ -92,7 +94,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_shape"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textcolor"
                     android:layout_marginTop="50dp"
                     android:clickable="true"
                     android:layout_marginLeft="100dp"

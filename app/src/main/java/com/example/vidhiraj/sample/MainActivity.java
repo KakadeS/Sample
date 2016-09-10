@@ -160,8 +160,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 try {
                     boolean success=response.getBoolean("success");
                     ApiKeyConstant.authToken=response.getString("token");
-
-
+                    Log.e("email success","done");
                     if(success)
                     {
                         Intent intent = new Intent(MainActivity.this, LoginPinActivity.class);
