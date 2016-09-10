@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -25,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by vidhiraj on 12-08-2016.
@@ -44,7 +47,7 @@ public class ClassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_class);
         Intent intent=getIntent();
       //  ApiKeyConstant.authToken=intent.getStringExtra("token");
-        String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes.json?authorization_token=" + ApiKeyConstant.authToken;
+        String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes.json";
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
@@ -86,9 +89,18 @@ public class ClassActivity extends AppCompatActivity {
 
                         Log.e("Volley", "Error");
                     }
-                }
-        );
+                })  {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization",ApiKeyConstant.authToken);
+                return headers;
+            }
+        };
+
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
+
         BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
         bottomBar.setItemsFromMenu(R.menu.main_menu, new OnMenuTabSelectedListener() {
             @Override

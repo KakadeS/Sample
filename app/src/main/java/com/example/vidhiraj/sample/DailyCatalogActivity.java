@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -25,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lenovo on 21/08/2016.
@@ -40,7 +43,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
     int current_page=1;
     Button load;
     ProgressDialog pDialog;
-    String url=ApiKeyConstant.apiUrl + "/api/v1/daily_teachs?authorization_token=" + ApiKeyConstant.authToken;
+    String url=ApiKeyConstant.apiUrl + "/api/v1/daily_teachs";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,8 +90,15 @@ public class DailyCatalogActivity extends AppCompatActivity {
 
                         Log.e("Volley", "Error");
                     }
-                }
-        );
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization",ApiKeyConstant.authToken);
+                return headers;
+            }
+        };
 
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
         load.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +129,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
                     current_page += 1;
 
                     // Next page request
-                    String url = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs?authorization_token=" + ApiKeyConstant.authToken+"&page="+current_page;
+                    String url = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs&page="+current_page;
 
                     JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,url,new JSONObject(), new Response.Listener<JSONObject>(){
                         @Override
@@ -159,12 +169,19 @@ public class DailyCatalogActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-
+                                    load.setVisibility(View.GONE);
                                     Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
                                     Log.e("Poonam", "Error");
                                 }
-                            }
-                    );
+                            }) {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("Content-Type", "application/json; charset=utf-8");
+                            headers.put("Authorization",ApiKeyConstant.authToken);
+                            return headers;
+                        }
+                    };
 
                     VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 

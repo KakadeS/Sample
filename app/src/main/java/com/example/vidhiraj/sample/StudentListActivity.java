@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -26,7 +27,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lenovo on 22/08/2016.
@@ -44,7 +47,7 @@ public class StudentListActivity extends AppCompatActivity {
     ProgressDialog pDialog;
     // private List<StudentData> studentList;
 
-    String url= ApiKeyConstant.apiUrl + "/api/v1/students?authorization_token=" + ApiKeyConstant.authToken;
+    String url= ApiKeyConstant.apiUrl + "/api/v1/students";
     protected Handler handler;
 
     @Override
@@ -101,8 +104,15 @@ public class StudentListActivity extends AppCompatActivity {
 
                         Log.e("Volley", "Error");
                     }
-                }
-        );
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization",ApiKeyConstant.authToken);
+                return headers;
+            }
+        };
 
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
         load.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +176,7 @@ public class StudentListActivity extends AppCompatActivity {
                     current_page += 1;
 
                     // Next page request
-                    url = ApiKeyConstant.apiUrl + "/api/v1/students?authorization_token=" + ApiKeyConstant.authToken +"&page="+ current_page;
+                    url = ApiKeyConstant.apiUrl + "/api/v1/students&page="+ current_page;
 
                     JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
                         @Override
@@ -209,12 +219,19 @@ public class StudentListActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-
+                                    load.setVisibility(View.GONE);
                                     Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
                                     Log.e("Poonam", "Error");
                                 }
-                            }
-                    );
+                            }) {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("Content-Type", "application/json; charset=utf-8");
+                            headers.put("Authorization",ApiKeyConstant.authToken);
+                            return headers;
+                        }
+                    };
 
                     VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 

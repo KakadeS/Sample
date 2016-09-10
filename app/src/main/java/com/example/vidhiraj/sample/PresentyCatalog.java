@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,7 +23,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lenovo on 31/08/2016.
@@ -43,7 +46,7 @@ public class PresentyCatalog extends AppCompatActivity {
         Log.e("next dtp", String.valueOf(id));
         savePresenty= (Button) findViewById(R.id.savepresenty);
         cancelPresenty= (Button) findViewById(R.id.button);
-       String url=ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/"+id+"/get_catlogs?authorization_token=" + ApiKeyConstant.authToken;
+       String url=ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/"+id+"/get_catlogs";
         Log.e("dtp url",url);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,url,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
@@ -84,8 +87,15 @@ public class PresentyCatalog extends AppCompatActivity {
 
                         Log.e("Volley", "Error");
                     }
-                }
-        );
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization",ApiKeyConstant.authToken);
+                return headers;
+            }
+        };
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
 
@@ -130,7 +140,7 @@ public class PresentyCatalog extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                String loginURL = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/" + id + "/save_catlogs?authorization_token=" + ApiKeyConstant.authToken;
+                String loginURL = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/" + id + "/save_catlogs";
                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, loginURL,daily_teaching_point, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -154,8 +164,15 @@ public class PresentyCatalog extends AppCompatActivity {
                             public void onErrorResponse(VolleyError error) {
                                 Toast.makeText(getBaseContext(), "Student Presenty Not Saved", Toast.LENGTH_LONG).show();
                             }
-                        }
-                );
+                        }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/json; charset=utf-8");
+                        headers.put("Authorization",ApiKeyConstant.authToken);
+                        return headers;
+                    }
+                };
                 VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
             }
         });

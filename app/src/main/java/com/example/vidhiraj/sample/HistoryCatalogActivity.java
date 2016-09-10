@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -19,6 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by lenovo on 22/08/2016.
@@ -37,7 +40,7 @@ public class HistoryCatalogActivity extends AppCompatActivity {
         Intent intent=getIntent();
         String id=intent.getStringExtra("daily_id");
         Log.e("id is",id);
-        String loginURL = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/" + id +"?authorization_token=" + ApiKeyConstant.authToken;
+        String loginURL = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/" + id;
         Log.e("daily url",loginURL);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,loginURL,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
@@ -66,8 +69,15 @@ public class HistoryCatalogActivity extends AppCompatActivity {
 
                         Log.e("Volley", "Error");
                     }
-                }
-        );
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Authorization",ApiKeyConstant.authToken);
+                return headers;
+            }
+        };
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
     }
