@@ -1,6 +1,7 @@
 package com.example.vidhiraj.sample;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +22,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnMenuTabSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +60,32 @@ public class StudentListActivity extends AppCompatActivity {
         //  toolbar = (Toolbar) findViewById(R.id.toolbar);
        // tvEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
+        bottomBar.setItemsFromMenu(R.menu.main_menu3, new OnMenuTabSelectedListener() {
+            @Override
+            public void onMenuItemSelected(int itemId) {
+                Intent intent;
+                switch (itemId) {
+                    case R.id.create_item:
+                        intent=new Intent(StudentListActivity.this,ClassActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.student_item:
+                        intent=new Intent(StudentListActivity.this,StudentListActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.teach_item:
+                        intent=new Intent(StudentListActivity.this,DailyCatalogActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+            }
+        });
+
+        // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
+        bottomBar.setActiveTabColor("#337ab7");
+
+
         load = (Button) findViewById(R.id.loadmore);
         dailyTeach = new ArrayList<StudentData>();
         handler = new Handler();
@@ -72,6 +101,13 @@ public class StudentListActivity extends AppCompatActivity {
                         Log.e("first success", "sss");
                         JSONArray jsonArray = response.getJSONArray("students");
                         Log.e("json array", String.valueOf(jsonArray));
+                        int arrayLength=jsonArray.length();
+                        Log.e("array length is", String.valueOf(arrayLength));
+                        if(arrayLength >= 10)
+                        {
+                            load.setVisibility(View.VISIBLE);
+                        }
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Log.e("for loop", String.valueOf(jsonArray.length()));
                             JSONObject orgObj = jsonArray.getJSONObject(i);
@@ -123,6 +159,17 @@ public class StudentListActivity extends AppCompatActivity {
         });
         addTextListener();
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(StudentListActivity.this, ClassActivity.class));
+        finish();
+
+    }
+
+
 
     public void addTextListener() {
         search.addTextChangedListener(new TextWatcher() {
@@ -187,7 +234,13 @@ public class StudentListActivity extends AppCompatActivity {
                                 if (success) {
                                     Log.e("first success", "sss");
                                     JSONArray jsonArray = response.getJSONArray("students");
-                                    if(jsonArray.length()!=0) {
+                                    int arrayLength=jsonArray.length();
+                                    Log.e("array length is", String.valueOf(arrayLength));
+                                    if(arrayLength >= 10)
+                                    {
+                                        load.setVisibility(View.VISIBLE);
+                                    }
+
                                         Log.e("json array", String.valueOf(jsonArray));
                                         for (int i = 0; i < jsonArray.length(); i++) {
                                             Log.e("for loop", String.valueOf(jsonArray.length()));
@@ -201,12 +254,8 @@ public class StudentListActivity extends AppCompatActivity {
                                             Log.e("data is", String.valueOf(dailyTeach));
                                             mAdapter.notifyItemInserted(dailyTeach.size());
                                         }
-                                    }
-                                    else
-                                    {
-                                       // Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
-                                        load.setVisibility(View.GONE);
-                                    }
+
+
                                 }
 
                             } catch (JSONException e) {
@@ -219,7 +268,7 @@ public class StudentListActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    load.setVisibility(View.GONE);
+                                   load.setVisibility(View.GONE);
                                     Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
                                     Log.e("Poonam", "Error");
                                 }

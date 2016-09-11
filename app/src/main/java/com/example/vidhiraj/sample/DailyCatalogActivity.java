@@ -1,6 +1,7 @@
 package com.example.vidhiraj.sample;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnMenuTabSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,16 +45,52 @@ public class DailyCatalogActivity extends AppCompatActivity {
     private  static ArrayList<DailyTeachData> dailyTeach=null;
     int current_page=1;
     Button load;
-    ProgressDialog pDialog;
+    ProgressDialog pDialog,mProgress;
     String url=ApiKeyConstant.apiUrl + "/api/v1/daily_teachs";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.daily_fill_catalog);
         recyclerView= (RecyclerView) findViewById(R.id.my_recycler_view);
+
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+
+        BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
+        bottomBar.setItemsFromMenu(R.menu.main_menu2, new OnMenuTabSelectedListener() {
+            @Override
+            public void onMenuItemSelected(int itemId) {
+                Intent intent;
+                switch (itemId) {
+                    case R.id.create_item:
+                        intent=new Intent(DailyCatalogActivity.this,ClassActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.student_item:
+                        intent=new Intent(DailyCatalogActivity.this,StudentListActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.teach_item:
+                        intent=new Intent(DailyCatalogActivity.this,DailyCatalogActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+            }
+        });
+
+        // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
+        bottomBar.setActiveTabColor("#337ab7");
+
+
+
+
+
         load= (Button) findViewById(R.id.loadmore);
         dailyTeach=new ArrayList<>();
-        //  loadData();
+        mProgress.show();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,url,new JSONObject(), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
@@ -59,7 +98,14 @@ public class DailyCatalogActivity extends AppCompatActivity {
                     boolean success=response.getBoolean("success");
                     if(success)
                     {
+                        mProgress.dismiss();
                         JSONArray jsonArray = response.getJSONArray("daily_teaching_points");
+                        int arrayLength=jsonArray.length();
+                        Log.e("array length is", String.valueOf(arrayLength));
+                        if(arrayLength >= 10)
+                        {
+                            load.setVisibility(View.VISIBLE);
+                        }
                         for (int i=0; i<jsonArray.length(); i++) {
                             JSONObject orgObj = jsonArray.getJSONObject(i);
                             DailyTeachData dailyData = new DailyTeachData();
@@ -89,6 +135,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
 
                         Log.e("Volley", "Error");
+                        mProgress.dismiss();
                     }
                 }) {
             @Override
@@ -108,6 +155,16 @@ public class DailyCatalogActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(DailyCatalogActivity.this, ClassActivity.class));
+        finish();
+
+    }
+
 
     private class loadMoreListView extends AsyncTask<Void, Void, Void> {
 
@@ -139,7 +196,13 @@ public class DailyCatalogActivity extends AppCompatActivity {
                                 if(success)
                                 {
                                     JSONArray jsonArray = response.getJSONArray("daily_teaching_points");
-                                    if(jsonArray.length()!=0) {
+
+                                    int arrayLength=jsonArray.length();
+                                    Log.e("array length is", String.valueOf(arrayLength));
+                                    if(arrayLength >= 10)
+                                    {
+                                        load.setVisibility(View.VISIBLE);
+                                    }
                                         for (int i = 0; i < jsonArray.length(); i++) {
                                             JSONObject orgObj = jsonArray.getJSONObject(i);
                                             DailyTeachData dailyData = new DailyTeachData();
@@ -151,13 +214,13 @@ public class DailyCatalogActivity extends AppCompatActivity {
                                             dailyTeach.add(dailyData);
                                             adapter.notifyItemInserted(dailyTeach.size());
                                         }
-                                    }
 
-                                    else
-                                    {
-                                        // Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
-                                        load.setVisibility(View.GONE);
-                                    }
+
+//                                    else
+//                                    {
+//                                        // Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
+//                                        load.setVisibility(View.GONE);
+//                                    }
                                 }
                             }  catch (JSONException e) {
                                 String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();

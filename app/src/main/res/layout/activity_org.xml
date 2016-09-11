@@ -71,7 +71,7 @@
             <EditText android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:inputType="numberPassword"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:textColor="@color/textcolor"

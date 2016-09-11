@@ -1,5 +1,6 @@
 package com.example.vidhiraj.sample;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,12 +54,17 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
-
+    ProgressDialog mProgress;
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_layout);
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
         inputConfirmPin = (TextInputLayout) findViewById(R.id.inputconfirm);
         //setPinbutton = (Button) findViewById(R.id.confirmuser);
         uniqueUserPin = (EditText) findViewById(R.id.userpin);
@@ -69,7 +75,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
 
         mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-        mAdapter = new EraMyAdapter(TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mAdapter = new EraMyAdapter(LoginPinActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
 
@@ -136,7 +142,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
 
             Log.e("success","done");
 
-            String mpinString=uniqueConfirmUserPin.getText().toString();
+            final String mpinString=uniqueConfirmUserPin.getText().toString();
             mpin= Integer.parseInt(mpinString);
             device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
@@ -152,7 +158,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
             userObj.put("user", jo);
 
             String loginURL = ApiKeyConstant.apiUrl +"/users/mobile_sign_up";
-
+            mProgress.show();
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL, userObj, new Response.Listener<JSONObject>(){
                 @Override
                 public void onResponse(JSONObject response) {
@@ -160,7 +166,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
                         boolean success=response.getBoolean("success");
                         if(success)
                         {
-
+                            mProgress.dismiss();
                             ContentValues values = new ContentValues();
                             values.put(UserDB.KEY_EMAIL,email);
                             getContentResolver().insert(User.CONTENT_URI, values);
@@ -179,6 +185,8 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e("Volley", "Error");
+                            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+                            mProgress.dismiss();
 
                         }
                     }

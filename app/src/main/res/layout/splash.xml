@@ -49,7 +49,7 @@
             android:layout_gravity="center"
             android:gravity="center_horizontal"
             android:text="ERACORD"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="#337ab7"
             android:textSize="40sp"
             android:textStyle="bold" />
     </FrameLayout>

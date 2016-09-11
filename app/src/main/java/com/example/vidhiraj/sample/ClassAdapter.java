@@ -77,8 +77,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
         ImageView imageView = holder.imageViewIcon;
 
 
-        textViewName.setText(dataSet.get(position).getName());
-        textViewVersion.setText(dataSet.get(position).getSubject());
+        textViewName.setText(dataSet.get(position).getSubject());
+        textViewVersion.setText(dataSet.get(position).getName());
         textViewId.setText(Integer.toString(dataSet.get(position).getId()));
         imageView.setImageResource(dataSet.get(position).getImage());
     }

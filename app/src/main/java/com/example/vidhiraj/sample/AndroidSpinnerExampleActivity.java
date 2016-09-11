@@ -1,6 +1,8 @@
 package com.example.vidhiraj.sample;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,12 +58,17 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
     EditText editPassword;
     String finalEmail;
     String device_id;
+    ProgressDialog mProgress;
     // Declaring Action Bar Drawer Toggle
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
         device_id= Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         Log.e("id is", device_id);
@@ -79,6 +87,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
         }
         String loginURL = ApiKeyConstant.apiUrl + "/users/get_organisations.json?email=" + email + "&device_id=" + device_id;
         Log.e("url", loginURL);
+        mProgress.show();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, loginURL, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -87,6 +96,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                     boolean success = response.getBoolean("success");
                     Spinner spinner = (Spinner) findViewById(R.id.spinner);
                     if (success) {
+                        mProgress.dismiss();
                         boolean multiple_organisations = response.getBoolean("multiple_organisations");
                         JSONArray jsonArray = response.getJSONArray("organisations");
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -122,12 +132,16 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley", "Error");
+                        mProgress.dismiss();
 
                     }
                 }
         );
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
         setContentView(R.layout.activity_org);
+
+
+
         editPassword= (EditText) findViewById(R.id.editTextPassword);
         signDiffUser = (TextView) findViewById(R.id.diffuser);
         signDiffUser.setOnClickListener(new View.OnClickListener() {
@@ -155,55 +169,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                 }
 
 
-//                editPassword= (EditText) findViewById(R.id.editTextPassword);
-//                final String user_password=editPassword.getText().toString();
-//                Log.e("user",user_password);
-//
-//                JSONObject userObj=new JSONObject();
-//                JSONObject user=new JSONObject();
-//
-//                try {
-//                    userObj.put("email", finalEmail);
-//                    userObj.put("device_id",device_id);
-//                    userObj.put("mpin",user_password);
-//                    user.put("user",userObj);
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                Log.e("user", String.valueOf(user));
-//                String loginURL = ApiKeyConstant.apiUrl +"/users/mpin_sign_in";
-//
-//                JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL,user, new Response.Listener<JSONObject>(){
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//                            boolean success=response.getBoolean("success");
-//                            if(success)
-//                            {
-//                                ApiKeyConstant.authToken=response.getString("token");
-//                                Intent intent=new Intent(AndroidSpinnerExampleActivity.this,ClassActivity.class);
-//                                intent.putExtra("token",ApiKeyConstant.authToken);
-//                                startActivity(intent);
-//                            }
-//
-//
-//                        } catch (JSONException e) {
-//                            String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
-//                            Log.e("sdcard-err2:",err);
-//                        }
-//
-//                    }
-//                },
-//                        new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                Log.e("Volley", "Error");
-//
-//                            }
-//                        }
-//                );
-//                VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
             }
         });
 
@@ -222,9 +187,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
 
     mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-    mAdapter=new
-
-    EraMyAdapter(TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+    mAdapter=new EraMyAdapter(AndroidSpinnerExampleActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
     // And passing the titles,icons,header view name, header view email,
     // and header view profile picture
 
@@ -317,6 +280,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 Log.e("Volley", "Error");
+                                Toast.makeText(getBaseContext(), "Enter the correct pin", Toast.LENGTH_LONG).show();
 
                             }
                         }
@@ -345,6 +309,21 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
         }
         return valid;
     }
-
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
+                .setMessage("Are you sure?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                        System.exit(0);
+                    }
+                }).setNegativeButton("no", null).show();
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.vidhiraj.sample;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,6 +23,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;
     EditText editTextEmail,editPassword;
+    private ProgressDialog mProgress;
     // Declaring Action Bar Drawer Toggle
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -76,11 +79,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getSupportLoaderManager().initLoader(0, null, this);
             toolbar = (Toolbar) findViewById(R.id.tool_bar);
             setSupportActionBar(toolbar);
+
+            mProgress = new ProgressDialog(this);
+            mProgress.setTitle("Processing...");
+            mProgress.setMessage("Please wait...");
+            mProgress.setCancelable(false);
+            mProgress.setIndeterminate(true);
+
+
+
+
             editTextEmail = (EditText) findViewById(R.id.editTextEmail);
             editPassword = (EditText) findViewById(R.id.editTextPassword);
             mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
             mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-            mAdapter = new EraMyAdapter(TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+            mAdapter = new EraMyAdapter(MainActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
             mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
             mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
             mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
@@ -136,40 +149,40 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
     public void login() throws JSONException {
     Log.d(TAG, "Login");
-
-    if (!validate()) {
+       if (!validate()) {
+        Log.e("if cond","inside");
         onLoginFailed();
         return;
-    } else{
-
+       }
+       else {
+        Log.e("else part","done");
         final String user_email=editTextEmail.getText().toString();
         String user_password=editPassword.getText().toString();
-
+        Log.e("email",user_email);
+        Log.e("password",user_password);
         JSONObject jo = new JSONObject();
         jo.put("email", user_email);
         jo.put("password", user_password);
-
         JSONObject userObj = new JSONObject();
         userObj.put("user", jo);
-
+        Log.e("user is", String.valueOf(userObj));
 
         String loginURL = ApiKeyConstant.apiUrl +"/users/mobile_sign_in";
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL, userObj, new Response.Listener<JSONObject>(){
+          mProgress.show();
+           JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL, userObj, new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     boolean success=response.getBoolean("success");
                     ApiKeyConstant.authToken=response.getString("token");
-                    Log.e("email success","done");
                     if(success)
                     {
+                        mProgress.dismiss();
                         Intent intent = new Intent(MainActivity.this, LoginPinActivity.class);
                         intent.putExtra("email",user_email);
                         intent.putExtra("authorization_token",ApiKeyConstant.authToken);
                         startActivity(intent);
-                    }else {
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -180,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley", "Error");
+                        mProgress.dismiss();
+
 
                     }
                 }
@@ -218,5 +233,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         return valid;
+    }
+
+    @Override
+    public void onBackPressed() {
+       finish();
     }
 }

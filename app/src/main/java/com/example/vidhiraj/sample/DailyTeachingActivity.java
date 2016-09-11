@@ -99,10 +99,10 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
 
                         }
                     }
-
                     ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, categories);
                     dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(dataAdapter);
+                    spinner.setPrompt("country");
 
                 } catch (JSONException e) {
                     String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
@@ -209,42 +209,15 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
             }
         });
 
-
-
-
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-
-        //coordinatorLayout = (CoordinatorLayout) findViewById(R.id.three_buttons_activity);
-
-        BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
-        bottomBar.setItemsFromMenu(R.menu.main_menu, new OnMenuTabSelectedListener() {
-            @Override
-            public void onMenuItemSelected(int itemId) {
-                switch (itemId) {
-                    case R.id.recent_item:
-                        Snackbar.make(Drawer, "Recent Item Selected", Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.favorite_item:
-                        Snackbar.make(Drawer, "Favorite Item Selected", Snackbar.LENGTH_LONG).show();
-                        break;
-                    case R.id.location_item:
-                        Snackbar.make(Drawer, "Location Item Selected", Snackbar.LENGTH_LONG).show();
-                        break;
-                }
-            }
-        });
-
-        // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
-        bottomBar.setActiveTabColor("#C2185B");
-
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
 
         mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-        mAdapter = new EraMyAdapter(TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mAdapter = new EraMyAdapter(DailyTeachingActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
 
@@ -280,6 +253,18 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(DailyTeachingActivity.this, ClassActivity.class));
+        finish();
+
+    }
+
+
+
 
     @Override
     public void onStart() {

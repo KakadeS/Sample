@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/student_item"
+        android:icon="@drawable/ic_pets_black_24dp"
+        android:title="Students"
+        />
+    <item
+        android:id="@+id/create_item"
+        android:icon="@drawable/ic_assignment_black_24dp"
+        android:title="Create"
+        />
+    <item android:id="@+id/teach_item"
+        android:icon="@drawable/ic_reorder_black_24dp"
+        android:title="Teaching"
+         />
+</menu>
