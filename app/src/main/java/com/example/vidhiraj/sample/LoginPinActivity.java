@@ -172,6 +172,8 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
                             getContentResolver().insert(User.CONTENT_URI, values);
                             Log.e("Inserted values: ", values.toString());
                             Intent intent = new Intent(LoginPinActivity.this, AndroidSpinnerExampleActivity.class);
+                            intent.putExtra("email",email);
+                            finish();
                             startActivity(intent);
                         }
 

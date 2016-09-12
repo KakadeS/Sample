@@ -54,6 +54,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     TextView signDiffUser;
+     TextView useremail;
     ActionBarDrawerToggle mDrawerToggle;
     EditText editPassword;
     String finalEmail;
@@ -64,6 +65,9 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_org);
+        useremail=(TextView) findViewById(R.id.useremail);
+
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Processing...");
         mProgress.setMessage("Please wait...");
@@ -85,6 +89,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
 
             cursor.close();
         }
+        useremail.setText(email);
         String loginURL = ApiKeyConstant.apiUrl + "/users/get_organisations.json?email=" + email + "&device_id=" + device_id;
         Log.e("url", loginURL);
         mProgress.show();
@@ -110,8 +115,8 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                             organisation.add("OrganizationTwo");
                             organisation.add("OrganizationThree");
                             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, organisation);
-                            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinner.setAdapter(dataAdapter);
+                            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                         } else {
                             TextView org_name = (TextView) findViewById(R.id.org_id);
@@ -138,7 +143,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                 }
         );
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
-        setContentView(R.layout.activity_org);
+
 
 
 
@@ -153,6 +158,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                 SQLiteDatabase db = userDB.getWritableDatabase();
                 db.execSQL("DELETE FROM " + UserDB.DATABASE_TABLE);
                 Intent intent = new Intent(AndroidSpinnerExampleActivity.this, MainActivity.class);
+                finish();
                 startActivity(intent);
 
             }

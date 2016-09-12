@@ -32,7 +32,7 @@
     android:layout_margin="5dp"
     android:id="@+id/loadmore"
     android:visibility="gone"
-    android:text="Fixed Footer"
+    android:text="Load More"
     android:textColor="#000"
     android:textSize="20sp" />
     </RelativeLayout>

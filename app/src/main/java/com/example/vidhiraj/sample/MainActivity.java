@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         Intent intent = new Intent(MainActivity.this, LoginPinActivity.class);
                         intent.putExtra("email",user_email);
                         intent.putExtra("authorization_token",ApiKeyConstant.authToken);
+                        finish();
                         startActivity(intent);
                     }
                 } catch (JSONException e) {
@@ -193,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley", "Error");
+                        Toast.makeText(getBaseContext(), "User Does Not Exist", Toast.LENGTH_LONG).show();
                         mProgress.dismiss();
 
 
