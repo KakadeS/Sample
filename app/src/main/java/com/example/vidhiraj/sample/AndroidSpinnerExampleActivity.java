@@ -152,12 +152,15 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
         signDiffUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Cursor cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
-                Log.e("count is", String.valueOf(cursor.getCount()));
-                UserDB userDB = new UserDB(getApplicationContext());
-                SQLiteDatabase db = userDB.getWritableDatabase();
-                db.execSQL("DELETE FROM " + UserDB.DATABASE_TABLE);
+
+//                Cursor cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+//                Log.e("count is", String.valueOf(cursor.getCount()));
+               // UserDB userDB = new UserDB(getApplicationContext());
+//                SQLiteDatabase db = userDB.getWritableDatabase();
+//                db.execSQL("DELETE FROM " + UserDB.DATABASE_TABLE);
+                boolean signdiffflag=true;
                 Intent intent = new Intent(AndroidSpinnerExampleActivity.this, MainActivity.class);
+                intent.putExtra("diffflag",signdiffflag);
                 finish();
                 startActivity(intent);
 

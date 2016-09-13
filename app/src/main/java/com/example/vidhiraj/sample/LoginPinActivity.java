@@ -3,6 +3,8 @@ package com.example.vidhiraj.sample;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
@@ -167,10 +169,31 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
                         if(success)
                         {
                             mProgress.dismiss();
-                            ContentValues values = new ContentValues();
-                            values.put(UserDB.KEY_EMAIL,email);
-                            getContentResolver().insert(User.CONTENT_URI, values);
-                            Log.e("Inserted values: ", values.toString());
+                            Cursor cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+                            Log.e("record is", String.valueOf(cursor.getCount()));
+                            if (cursor.getCount() != 0) {
+                                UserDB userDB = new UserDB(getApplicationContext());
+                                SQLiteDatabase db = userDB.getWritableDatabase();
+                                db.execSQL("DELETE FROM " + UserDB.DATABASE_TABLE);
+                                cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+                                Log.e("delete count", String.valueOf(cursor.getCount()));
+                                //Insert the record
+                                ContentValues values = new ContentValues();
+                                values.put(UserDB.KEY_EMAIL,email);
+                                getContentResolver().insert(User.CONTENT_URI, values);
+                                Log.e("Inserted values: ", values.toString());
+                                cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+                                Log.e("insert is", String.valueOf(cursor.getCount()));
+                            }
+                            else {
+                                ContentValues values = new ContentValues();
+                                values.put(UserDB.KEY_EMAIL,email);
+                                getContentResolver().insert(User.CONTENT_URI, values);
+                                Log.e("Inserted values: ", values.toString());
+                                cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+                                Log.e("insert is", String.valueOf(cursor.getCount()));
+                            }
+
                             Intent intent = new Intent(LoginPinActivity.this, AndroidSpinnerExampleActivity.class);
                             intent.putExtra("email",email);
                             finish();
@@ -187,7 +210,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e("Volley", "Error");
-                            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), "Try Again", Toast.LENGTH_LONG).show();
                             mProgress.dismiss();
 
                         }
@@ -199,7 +222,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
         }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Try Again", Toast.LENGTH_LONG).show();
         //  _loginButton.setEnabled(true);
     }
 

@@ -68,12 +68,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent1=getIntent();
+        boolean signflag=intent1.getBooleanExtra("diffflag",false);
+        Log.e("flag is", String.valueOf(signflag));
         Cursor cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
         Log.e("record is", String.valueOf(cursor.getCount()));
-        if (cursor.getCount() != 0) {
+        if (cursor.getCount() != 0 && signflag==false) {
             Intent intent = new Intent(MainActivity.this, AndroidSpinnerExampleActivity.class);
             startActivity(intent);
-        } else {
+        }
+        else if((cursor.getCount() != 0 && signflag==true) || (cursor.getCount() == 0 && signflag==true) || (cursor.getCount() == 0 && signflag==false) )  {
 
             setContentView(R.layout.activity_main);
             getSupportLoaderManager().initLoader(0, null, this);
@@ -85,10 +89,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mProgress.setMessage("Please wait...");
             mProgress.setCancelable(false);
             mProgress.setIndeterminate(true);
-
-
-
-
             editTextEmail = (EditText) findViewById(R.id.editTextEmail);
             editPassword = (EditText) findViewById(R.id.editTextPassword);
             mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
