@@ -40,19 +40,12 @@ import java.util.List;
  * Created by vidhiraj on 10-08-2016.
  */
 public class AndroidSpinnerExampleActivity extends AppCompatActivity {
-    String TITLES[] = {"Home", "Change Password", "Logout"};
-    int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
-    TextView orgName;
-    String NAME = "xyz";
-    String EMAIL = "xyz@gmail.com";
-    int PROFILE = R.drawable.ic_photos;
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     private Button spinBtn;
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
-    DrawerLayout Drawer;                                  // Declaring DrawerLayout
     TextView signDiffUser;
      TextView useremail;
     ActionBarDrawerToggle mDrawerToggle;
@@ -181,60 +174,9 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     toolbar=(Toolbar)
-
     findViewById(R.id.tool_bar);
-
     setSupportActionBar(toolbar);
-
-    mRecyclerView=(RecyclerView)
-
-    findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-
-    mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-
-    mAdapter=new EraMyAdapter(AndroidSpinnerExampleActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
-    // And passing the titles,icons,header view name, header view email,
-    // and header view profile picture
-
-    mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
-
-    mLayoutManager=new
-
-    LinearLayoutManager(this);                 // Creating a layout Manager
-
-    mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
-
-    Drawer=(DrawerLayout)
-
-    findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
-
-    mDrawerToggle=new
-
-    ActionBarDrawerToggle(this,Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
-
-        @Override
-        public void onDrawerOpened (View drawerView){
-            super.onDrawerOpened(drawerView);
-            // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-            // open I am not going to put anything here)
-        }
-
-        @Override
-        public void onDrawerClosed (View drawerView){
-            super.onDrawerClosed(drawerView);
-            // Code here will execute once drawer is closed
-        }
-
-    }
-
-    ; // Drawer Toggle Object Made
-    Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-    mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
-
 }
 
 
@@ -274,6 +216,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                                 ApiKeyConstant.authToken=response.getString("token");
                                 Intent intent=new Intent(AndroidSpinnerExampleActivity.this,ClassActivity.class);
                                 intent.putExtra("token",ApiKeyConstant.authToken);
+                                intent.putExtra("email",finalEmail);
                                 startActivity(intent);
                             }
 

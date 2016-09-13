@@ -42,16 +42,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     Button loginButton;
     private EditText userEmail;
     private EditText userPassword;
-    String TITLES[] = {"Home", "Change Password", "Logout"};
-    int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
-    String NAME = "xyz";
-    String EMAIL = "xyz@gmail.com";
-    int PROFILE = R.drawable.ic_photos;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
-    RecyclerView mRecyclerView;                           // Declaring RecyclerView
-    RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
-    RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
-    DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;
     EditText editTextEmail,editPassword;
     private ProgressDialog mProgress;
@@ -91,26 +82,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mProgress.setIndeterminate(true);
             editTextEmail = (EditText) findViewById(R.id.editTextEmail);
             editPassword = (EditText) findViewById(R.id.editTextPassword);
-            mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-            mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-            mAdapter = new EraMyAdapter(MainActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
-            mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
-            mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-            mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
-            Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
-            mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
-                @Override
-                public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
-                }
-
-                @Override
-                public void onDrawerClosed(View drawerView) {
-                    super.onDrawerClosed(drawerView);
-                }
-            }; // Drawer Toggle Object Made
-            Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-            mDrawerToggle.syncState();               // Finally we set the drawer toggle sync Stat
             userEmail = (EditText) findViewById(R.id.editTextEmail);
             userPassword = (EditText) findViewById(R.id.editTextPassword);
 

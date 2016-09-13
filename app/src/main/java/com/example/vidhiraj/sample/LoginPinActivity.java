@@ -40,22 +40,7 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
     Integer mpin;
     EditText uniqueUserPin, uniqueConfirmUserPin;
     TextInputLayout inputConfirmPin;
-    String TITLES[] = {"Home","Change Password","Logout"};
-    int ICONS[] = {R.drawable.ic_photos,R.drawable.ic_photos,R.drawable.ic_photos,R.drawable.ic_photos,R.drawable.ic_photos};
-
-    //Similarly we Create a String Resource for the name and email in the header view
-    //And we also create a int resource for profile picture in the header view
-
-    String NAME = "xyz";
-    String EMAIL = "xyz@gmail.com";
-    int PROFILE = R.drawable.ic_photos;
-
     private Toolbar toolbar;                              // Declaring the Toolbar Object
-
-    RecyclerView mRecyclerView;                           // Declaring RecyclerView
-    RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
-    RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
-    DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ProgressDialog mProgress;
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
     @Override
@@ -73,48 +58,13 @@ public class LoginPinActivity extends AppCompatActivity implements View.OnClickL
         uniqueConfirmUserPin = (EditText) findViewById(R.id.confirmuserpin);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
 
-        mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-
-        mAdapter = new EraMyAdapter(LoginPinActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
-        // And passing the titles,icons,header view name, header view email,
-        // and header view profile picture
-
-        mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
-
-        mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-
-        mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
         Intent intent = getIntent();
 
         ApiKeyConstant.authToken = intent.getStringExtra("authorization_token");
 
         email = intent.getStringExtra("email");
         Log.e("email is", email);
-//
-
-        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
-        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
-            }
-
-
-        }; // Drawer Toggle Object Made
-        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
-
         login = (Button) findViewById(R.id.loginuser);
         login.setOnClickListener(this);
 

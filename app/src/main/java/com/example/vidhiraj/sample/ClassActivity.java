@@ -50,7 +50,7 @@ public class ClassActivity extends AppCompatActivity {
     String TITLES[] = {"Home", "Change Password", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     String NAME = "xyz";
-    String EMAIL = "xyz@gmail.com";
+    String EMAIL;
     int PROFILE = R.drawable.ic_photos;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
@@ -76,6 +76,8 @@ public class ClassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
+        Intent emailIntent=getIntent();
+        EMAIL=emailIntent.getStringExtra("email");
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         fetchClassData();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
