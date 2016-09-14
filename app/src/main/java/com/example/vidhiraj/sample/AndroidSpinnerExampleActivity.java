@@ -17,13 +17,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,12 +37,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by vidhiraj on 10-08-2016.
  */
-public class AndroidSpinnerExampleActivity extends AppCompatActivity {
+public class AndroidSpinnerExampleActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     private Button spinBtn;
@@ -53,14 +58,19 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
     String finalEmail;
     String device_id;
     ProgressDialog mProgress;
+    boolean multiorg=false;
+    int orgid,org_id;
+    Spinner spinner;
+    List<Integer> organisationId = new ArrayList<Integer>();
     // Declaring Action Bar Drawer Toggle
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_org);
+        spinner= (Spinner) findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(this);
         useremail=(TextView) findViewById(R.id.useremail);
-
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Processing...");
         mProgress.setMessage("Please wait...");
@@ -90,26 +100,30 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 String orgNameText = null;
+
                 try {
                     boolean success = response.getBoolean("success");
-                    Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
                     if (success) {
                         mProgress.dismiss();
                         boolean multiple_organisations = response.getBoolean("multiple_organisations");
+                        List<String> organisation = new ArrayList<String>();
+
                         JSONArray jsonArray = response.getJSONArray("organisations");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject orgObj = jsonArray.getJSONObject(i);
                             orgNameText = orgObj.getString("organisation_name");
+                            organisation.add(orgNameText);
+                            orgid=orgObj.getInt("organisation_id");
+                            organisationId.add(orgid);
                         }
                         if (multiple_organisations) {
+                            multiorg=true;
+                            Log.e("flag org is", String.valueOf(multiorg));
                             spinner.setVisibility(View.VISIBLE);
-                            List<String> organisation = new ArrayList<String>();
-                            organisation.add("OrganizationOne");
-                            organisation.add("OrganizationTwo");
-                            organisation.add("OrganizationThree");
-                            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, organisation);
-                            spinner.setAdapter(dataAdapter);
+                            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, organisation);
                             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinner.setAdapter(dataAdapter);
 
                         } else {
                             TextView org_name = (TextView) findViewById(R.id.org_id);
@@ -186,8 +200,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
             onLoginFailed();
             return;
         } else {
-
-
                 final String user_password=editPassword.getText().toString();
                 Log.e("user",user_password);
 
@@ -198,6 +210,13 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                     userObj.put("email", finalEmail);
                     userObj.put("device_id",device_id);
                     userObj.put("mpin",user_password);
+                    Log.e("flag org is", String.valueOf(multiorg));
+                    if(multiorg)
+                    {
+                        userObj.put("organisation_id",org_id);
+                        Log.e("org_id is", String.valueOf(org_id));
+                    }
+
                     user.put("user",userObj);
 
                 } catch (JSONException e) {
@@ -277,5 +296,26 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity {
                     }
                 }).setNegativeButton("no", null).show();
     }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.e("in orgid","done");
+        for(int j=position;j<=position;j++)
+        {
+            org_id=organisationId.get(j);
+            Log.e("for org_id", String.valueOf(org_id));
+        }
+        Log.e(" out org_id", String.valueOf(org_id));
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
+
 
 }

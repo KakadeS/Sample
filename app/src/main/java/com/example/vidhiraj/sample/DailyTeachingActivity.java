@@ -99,10 +99,9 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
 
                         }
                     }
-                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, categories);
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, categories);
                     dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(dataAdapter);
-                    spinner.setPrompt("country");
 
                 } catch (JSONException e) {
                     String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
@@ -308,7 +307,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        Log.e("selected","done");
         String item=null;
         Intent intent=getIntent();
         classid= intent.getStringExtra("teach_id");

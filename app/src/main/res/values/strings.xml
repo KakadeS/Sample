@@ -3,4 +3,5 @@
     <string name="drawer_open">close</string>
     <string name="drawer_close">open</string>
     <string name="chapter">Select Chapters</string>
+    <string name="org">Select Organization</string>
 </resources>
