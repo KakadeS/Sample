@@ -34,7 +34,7 @@ static Context context;
 
         TextView textView;
         ImageView imageView;
-        ImageView profile;
+       // ImageView profile;
         TextView Name;
         TextView email;
        // private Context context = null;
@@ -67,7 +67,7 @@ static Context context;
 
                 Name = (TextView) itemView.findViewById(R.id.name);         // Creating Text View object from header.xml for name
                 email = (TextView) itemView.findViewById(R.id.email);       // Creating Text View object from header.xml for email
-                profile = (ImageView) itemView.findViewById(R.id.circleView);// Creating Image view object from header.xml for profile pic
+         //       profile = (ImageView) itemView.findViewById(R.id.circleView);// Creating Image view object from header.xml for profile pic
                 Holderid = 0;                                                // Setting holder id = 0 as the object being populated are of type header view
             }
 
@@ -135,7 +135,7 @@ static Context context;
         }
         else{
 
-            holder.profile.setImageResource(profile);           // Similarly we set the resources for header view
+           // holder.profile.setImageResource(profile);           // Similarly we set the resources for header view
             holder.Name.setText(name);
             holder.email.setText(email);
         }

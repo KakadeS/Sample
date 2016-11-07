@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="178dp"
-    android:background="@android:color/holo_red_dark"
+    android:background="#80337ab7"
     android:orientation="vertical"
     android:weightSum="1">
 
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:textColor="@android:color/black"
-            android:text="Akash Bangad"
+            android:text="Abc"
             android:textSize="14sp"
             android:textStyle="bold"
 
@@ -35,19 +35,19 @@
             android:textColor="@android:color/black"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="5dp"
-            android:text="akash.bangad93@gmail.com"
+            android:text="abc@gmail.com"
             android:textSize="14sp"
             android:textStyle="normal"
 
             />
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/ic_photos"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="38dp"
-        android:id="@+id/circleView"
-        />
+    <!--<ImageView-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:src="@drawable/ic_photos"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginTop="38dp"-->
+        <!--android:id="@+id/circleView"-->
+        <!--/>-->
 </RelativeLayout>
