@@ -12,6 +12,6 @@
         />
     <item android:id="@+id/teach_item"
         android:icon="@drawable/ic_reorder_black_24dp"
-        android:title="Teaching"
+        android:title="Daily Teaches"
          />
 </menu>

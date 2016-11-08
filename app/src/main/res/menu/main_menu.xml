@@ -6,7 +6,7 @@
     <item
         android:id="@+id/teach_item"
         android:icon="@drawable/ic_reorder_black_24dp"
-        android:title="Teaching" />
+        android:title="Daily Teaches" />
     <item
         android:id="@+id/student_item"
         android:icon="@drawable/ic_pets_black_24dp"

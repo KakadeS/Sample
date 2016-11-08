@@ -8,11 +8,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daily Teaches"
+            android:layout_gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/my_recycler_view"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
