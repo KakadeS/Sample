@@ -42,17 +42,19 @@ public class DailyCatalogActivity extends AppCompatActivity {
     private static DailyCatalogAdapter adapter;
     private static RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
-    private  static ArrayList<DailyTeachData> dailyTeach=null;
-    int current_page=1;
+    private static ArrayList<DailyTeachData> dailyTeach = null;
+    int current_page = 1;
     Button load;
-    ProgressDialog pDialog,mProgress;
-    String url=ApiKeyConstant.apiUrl + "/api/v1/daily_teachs";
+    ProgressDialog pDialog, mProgress;
+    TextView dataAvailability;
+    String url = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.daily_fill_catalog);
-        recyclerView= (RecyclerView) findViewById(R.id.my_recycler_view);
-
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        dataAvailability = (TextView) findViewById(R.id.noData);
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Processing...");
         mProgress.setMessage("Please wait...");
@@ -66,15 +68,15 @@ public class DailyCatalogActivity extends AppCompatActivity {
                 Intent intent;
                 switch (itemId) {
                     case R.id.create_item:
-                        intent=new Intent(DailyCatalogActivity.this,ClassActivity.class);
+                        intent = new Intent(DailyCatalogActivity.this, ClassActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.student_item:
-                        intent=new Intent(DailyCatalogActivity.this,StudentListActivity.class);
+                        intent = new Intent(DailyCatalogActivity.this, StudentListActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.teach_item:
-                        intent=new Intent(DailyCatalogActivity.this,DailyCatalogActivity.class);
+                        intent = new Intent(DailyCatalogActivity.this, DailyCatalogActivity.class);
                         startActivity(intent);
                         break;
                 }
@@ -85,43 +87,42 @@ public class DailyCatalogActivity extends AppCompatActivity {
         bottomBar.setActiveTabColor("#337ab7");
 
 
-
-
-
-        load= (Button) findViewById(R.id.loadmore);
-        dailyTeach=new ArrayList<>();
+        load = (Button) findViewById(R.id.loadmore);
+        dailyTeach = new ArrayList<>();
         mProgress.show();
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,url,new JSONObject(), new Response.Listener<JSONObject>(){
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    boolean success=response.getBoolean("success");
-                    if(success)
-                    {
+                    boolean success = response.getBoolean("success");
+                    if (success) {
                         mProgress.dismiss();
                         JSONArray jsonArray = response.getJSONArray("daily_teaching_points");
-                        int arrayLength=jsonArray.length();
+                        int arrayLength = jsonArray.length();
                         Log.e("array length is", String.valueOf(arrayLength));
-                        if(arrayLength >= 10)
-                        {
+                        if (arrayLength >= 10) {
                             load.setVisibility(View.VISIBLE);
                         }
-                        for (int i=0; i<jsonArray.length(); i++) {
-                            JSONObject orgObj = jsonArray.getJSONObject(i);
-                            DailyTeachData dailyData = new DailyTeachData();
-                            dailyData.standard= orgObj.getString("jkci_class");
-                            dailyData.chapter= orgObj.getString("chapter");
-                            dailyData.date=orgObj.getString("date");
-                            dailyData.points=orgObj.getString("points");
-                            dailyData.id=orgObj.getInt("id");
-                            dailyTeach.add(dailyData);
+                        if (jsonArray.length() != 0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject orgObj = jsonArray.getJSONObject(i);
+                                DailyTeachData dailyData = new DailyTeachData();
+                                dailyData.standard = orgObj.getString("jkci_class");
+                                dailyData.chapter = orgObj.getString("chapter");
+                                dailyData.date = orgObj.getString("date");
+                                dailyData.points = orgObj.getString("points");
+                                dailyData.id = orgObj.getInt("id");
+                                dailyTeach.add(dailyData);
+                            }
+                        } else {
+                            dataAvailability.setVisibility(View.VISIBLE);
                         }
                     }
 
                     recyclerView.setHasFixedSize(true);
                     mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     recyclerView.setLayoutManager(mLayoutManager);
-                    adapter = new DailyCatalogAdapter(getApplicationContext(),dailyTeach, recyclerView);
+                    adapter = new DailyCatalogAdapter(getApplicationContext(), dailyTeach, recyclerView);
                     recyclerView.setAdapter(adapter);
 
                 } catch (JSONException e) {
@@ -142,7 +143,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("Authorization",ApiKeyConstant.authToken);
+                headers.put("Authorization", ApiKeyConstant.authToken);
                 return headers;
             }
         };
@@ -157,8 +158,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(DailyCatalogActivity.this, ClassActivity.class));
         finish();
@@ -186,34 +186,32 @@ public class DailyCatalogActivity extends AppCompatActivity {
                     current_page += 1;
 
                     // Next page request
-                    String url = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs&page="+current_page;
+                    String url = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs&page=" + current_page;
 
-                    JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,url,new JSONObject(), new Response.Listener<JSONObject>(){
+                    JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                boolean success=response.getBoolean("success");
-                                if(success)
-                                {
+                                boolean success = response.getBoolean("success");
+                                if (success) {
                                     JSONArray jsonArray = response.getJSONArray("daily_teaching_points");
 
-                                    int arrayLength=jsonArray.length();
+                                    int arrayLength = jsonArray.length();
                                     Log.e("array length is", String.valueOf(arrayLength));
-                                    if(arrayLength >= 10)
-                                    {
+                                    if (arrayLength >= 10) {
                                         load.setVisibility(View.VISIBLE);
                                     }
-                                        for (int i = 0; i < jsonArray.length(); i++) {
-                                            JSONObject orgObj = jsonArray.getJSONObject(i);
-                                            DailyTeachData dailyData = new DailyTeachData();
-                                            dailyData.standard = orgObj.getString("jkci_class");
-                                            dailyData.chapter = orgObj.getString("chapter");
-                                            dailyData.date = orgObj.getString("date");
-                                            dailyData.points = orgObj.getString("points");
-                                            dailyData.id = orgObj.getInt("id");
-                                            dailyTeach.add(dailyData);
-                                            adapter.notifyItemInserted(dailyTeach.size());
-                                        }
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject orgObj = jsonArray.getJSONObject(i);
+                                        DailyTeachData dailyData = new DailyTeachData();
+                                        dailyData.standard = orgObj.getString("jkci_class");
+                                        dailyData.chapter = orgObj.getString("chapter");
+                                        dailyData.date = orgObj.getString("date");
+                                        dailyData.points = orgObj.getString("points");
+                                        dailyData.id = orgObj.getInt("id");
+                                        dailyTeach.add(dailyData);
+                                        adapter.notifyItemInserted(dailyTeach.size());
+                                    }
 
 
 //                                    else
@@ -222,7 +220,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
 //                                        load.setVisibility(View.GONE);
 //                                    }
                                 }
-                            }  catch (JSONException e) {
+                            } catch (JSONException e) {
                                 String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
                                 Log.e("sdcard-err2:", err);
                             }
@@ -233,7 +231,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     load.setVisibility(View.GONE);
-                                    Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "No More Data to laod", Toast.LENGTH_LONG).show();
                                     Log.e("Poonam", "Error");
                                 }
                             }) {
@@ -241,7 +239,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             HashMap<String, String> headers = new HashMap<String, String>();
                             headers.put("Content-Type", "application/json; charset=utf-8");
-                            headers.put("Authorization",ApiKeyConstant.authToken);
+                            headers.put("Authorization", ApiKeyConstant.authToken);
                             return headers;
                         }
                     };
@@ -260,25 +258,6 @@ public class DailyCatalogActivity extends AppCompatActivity {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //public class DailyCatalogActivity extends AppCompatActivity {

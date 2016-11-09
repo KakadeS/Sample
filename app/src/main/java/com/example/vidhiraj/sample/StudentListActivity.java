@@ -48,6 +48,7 @@ public class StudentListActivity extends AppCompatActivity {
     Button load;
     EditText search;
     ProgressDialog pDialog;
+    TextView dataAvailability;
     // private List<StudentData> studentList;
 
     String url= ApiKeyConstant.apiUrl + "/api/v1/students";
@@ -60,6 +61,7 @@ public class StudentListActivity extends AppCompatActivity {
         //  toolbar = (Toolbar) findViewById(R.id.toolbar);
        // tvEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        dataAvailability=(TextView)findViewById(R.id.nodata);
         BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
         bottomBar.setItemsFromMenu(R.menu.main_menu3, new OnMenuTabSelectedListener() {
             @Override
@@ -107,19 +109,23 @@ public class StudentListActivity extends AppCompatActivity {
                         {
                             load.setVisibility(View.VISIBLE);
                         }
+                        if(jsonArray.length()!=0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Log.e("for loop", String.valueOf(jsonArray.length()));
+                                JSONObject orgObj = jsonArray.getJSONObject(i);
+                                Log.e("json obj", String.valueOf(orgObj));
+                                StudentData dailyData = new StudentData();
+                                dailyData.stud_name = orgObj.getString("name");
+                                dailyData.stud_class_name = orgObj.getString("class_names");
+                                dailyData.stud_hostel = orgObj.getBoolean("has_hostel");
+                                dailyTeach.add(dailyData);
+                                Log.e("data is", String.valueOf(dailyTeach));
+                                // mAdapter.notifyItemInserted(dailyTeach.size());
 
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            Log.e("for loop", String.valueOf(jsonArray.length()));
-                            JSONObject orgObj = jsonArray.getJSONObject(i);
-                            Log.e("json obj", String.valueOf(orgObj));
-                            StudentData dailyData =  new StudentData();
-                            dailyData.stud_name = orgObj.getString("name");
-                            dailyData.stud_class_name = orgObj.getString("class_names");
-                            dailyData.stud_hostel = orgObj.getBoolean("has_hostel");
-                            dailyTeach.add(dailyData);
-                            Log.e("data is", String.valueOf(dailyTeach));
-                            // mAdapter.notifyItemInserted(dailyTeach.size());
-
+                            }
+                        }
+                        else {
+                            dataAvailability.setVisibility(View.VISIBLE);
                         }
                     }
 

@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
+
 import static com.example.vidhiraj.sample.Utils.*;
 
 /**
@@ -49,7 +50,7 @@ public class ClassActivity extends AppCompatActivity {
 
     String TITLES[] = {"Home", "Change Password", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
-    String NAME = "xyz";
+    String NAME = "Eracord";
     String EMAIL;
     int PROFILE = R.drawable.ic_photos;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
@@ -66,6 +67,7 @@ public class ClassActivity extends AppCompatActivity {
     private static ArrayList<DailyTeachData> dailyTeach = null;
     SwipeRefreshLayout swipeRefreshLayout;
     boolean mIsRefreshing = false;
+    TextView dataAvailability;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -76,9 +78,11 @@ public class ClassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
-        Intent emailIntent=getIntent();
-        EMAIL=emailIntent.getStringExtra("email");
+        Intent emailIntent = getIntent();
+        EMAIL = emailIntent.getStringExtra("email");
+        Log.e("email is",EMAIL);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        dataAvailability = (TextView) findViewById(R.id.nodata);
         fetchClassData();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -88,8 +92,7 @@ public class ClassActivity extends AppCompatActivity {
                     fetchClassData();
                 } else {
                     android.os.Handler handler = new android.os.Handler();
-                    handler.postDelayed(new Runnable()
-                    {
+                    handler.postDelayed(new Runnable() {
                         public void run() {
                             swipeRefreshLayout.setRefreshing(false);
                         }
@@ -168,8 +171,7 @@ public class ClassActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         if (this.Drawer.isDrawerOpen(GravityCompat.START)) {
             this.Drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -190,15 +192,19 @@ public class ClassActivity extends AppCompatActivity {
                     if (success) {
                         swipeRefreshLayout.setRefreshing(false);
                         JSONArray jsonArray = response.getJSONArray("time_table_classes");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject orgObj = jsonArray.getJSONObject(i);
-                            ClassData classData = new ClassData();
-                            classData.name = orgObj.getString("class_name");
-                            classData.subject = orgObj.getString("subject");
-                            classData.image = R.drawable.daily_teach;
-                            String id = orgObj.getString("id");
-                            classData.id = Integer.parseInt(id);
-                            data.add(classData);
+                        if (jsonArray.length() != 0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject orgObj = jsonArray.getJSONObject(i);
+                                ClassData classData = new ClassData();
+                                classData.name = orgObj.getString("class_name");
+                                classData.subject = orgObj.getString("subject");
+                                classData.image = R.drawable.daily_teach;
+                                String id = orgObj.getString("id");
+                                classData.id = Integer.parseInt(id);
+                                data.add(classData);
+                            }
+                        } else {
+                            dataAvailability.setVisibility(View.VISIBLE);
                         }
                     }
 

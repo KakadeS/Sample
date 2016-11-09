@@ -12,17 +12,28 @@
         android:layout_weight="1"
         android:scrollbars="vertical"
         />
+    <TextView
+        android:id="@+id/nodata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:text="No Data Available"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:gravity="center"
+
+        android:textSize="20sp"/>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_weight="1"
         >
-
     <Button
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="SAVE"
+        android:visibility="gone"
         android:layout_marginLeft="10dp"
         android:id="@+id/savepresenty"
         android:textColor="@color/textcolor"
@@ -34,6 +45,7 @@
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="CANCEL"
+        android:visibility="gone"
         android:layout_marginLeft="10dp"
         android:id="@+id/button"
         android:textColor="@color/textcolor"
