@@ -1,6 +1,7 @@
 package com.example.vidhiraj.sample;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
+import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS_NAME;
 import static com.example.vidhiraj.sample.Utils.*;
 
 /**
@@ -78,9 +80,16 @@ public class ClassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
-        Intent emailIntent = getIntent();
-        EMAIL = emailIntent.getStringExtra("email");
-        Log.e("email is",EMAIL);
+
+
+//        Intent emailIntent = getIntent();
+//        EMAIL = emailIntent.getStringExtra("email");
+//        ApiKeyConstant.user_email=EMAIL;
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String user_email = prefs.getString("email", null);
+
+
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         dataAvailability = (TextView) findViewById(R.id.nodata);
         fetchClassData();
@@ -135,7 +144,7 @@ public class ClassActivity extends AppCompatActivity {
 
         mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-        mAdapter = new EraMyAdapter(ClassActivity.this, TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mAdapter = new EraMyAdapter(ClassActivity.this, TITLES, ICONS, NAME, user_email, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
 

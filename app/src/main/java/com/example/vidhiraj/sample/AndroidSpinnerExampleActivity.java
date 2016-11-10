@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -27,8 +28,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -61,6 +64,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
     boolean multiorg=false;
     int orgid,org_id;
     Spinner spinner;
+    public static String MY_PREFS_NAME = null;
     List<Integer> organisationId = new ArrayList<Integer>();
     // Declaring Action Bar Drawer Toggle
 
@@ -149,6 +153,10 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                     }
                 }
         );
+
+        int socketTimeout = 20000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonObjReq.setRetryPolicy(policy);
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
 
@@ -233,10 +241,14 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                             if(success)
                             {
                                 ApiKeyConstant.authToken=response.getString("token");
+                                MY_PREFS_NAME = "MyPrefsFile";
+                                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                                editor.putString("email", finalEmail);
+                                editor.commit();
                                 Intent intent=new Intent(AndroidSpinnerExampleActivity.this,ClassActivity.class);
-                                intent.putExtra("token",ApiKeyConstant.authToken);
-                                intent.putExtra("email",finalEmail);
-                                startActivity(intent);
+//                                intent.putExtra("token",ApiKeyConstant.authToken);
+//                                intent.putExtra("email",finalEmail);
+                                  startActivity(intent);
                             }
 
 

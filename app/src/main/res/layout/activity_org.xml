@@ -30,8 +30,10 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="10dp"
                 android:text="Organization :"
+                android:textStyle="bold"
+                android:layout_marginRight="10dp"
                 android:textColor="@color/textcolor"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
 
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -48,18 +50,18 @@
                     android:visibility="gone"
                     android:layout_marginLeft="10dp"
                     android:text="Organization :"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textColor="@color/textcolor"
                     android:layout_marginBottom="5dp"/>
             <Spinner
                 android:id="@+id/spinner"
                 android:visibility="gone"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="13dp"
                 android:layout_marginBottom="5dp"
                 android:spinnerMode="dialog"
                 android:prompt="@string/org"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="200dp"
+                android:layout_height="match_parent"/>
                 </FrameLayout>
 
         </LinearLayout>

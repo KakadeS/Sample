@@ -1,5 +1,6 @@
 package com.example.vidhiraj.sample;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,22 +48,16 @@ import java.util.Map;
  * Created by vidhiraj on 10-08-2016.
  */
 public class DailyTeachingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    String TITLES[] = {"Home", "Change Password", "Logout"};
-    int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
-    String NAME = "xyz";
-    String EMAIL = "xyz@gmail.com";
-    int PROFILE = R.drawable.ic_photos;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
-    RecyclerView mRecyclerView;                           // Declaring RecyclerView
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
-    DrawerLayout Drawer;                                  // Declaring DrawerLayout
-    ActionBarDrawerToggle mDrawerToggle;
     List<Integer> chapter_array = new ArrayList<Integer>();
     String classid;
     Button createCatalog,cancelCatalog;
     LinearLayout linearpoints;
     Integer chapter_id = null;
+    RecyclerView mRecyclerView;
+    ProgressDialog mProgress;
     // Declaring Action Bar Drawer Toggle
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -74,6 +69,13 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_teaching);
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+
+
         final Intent intent = getIntent();
         classid= intent.getStringExtra("teach_id");
         Log.e("getchap", String.valueOf(classid));
@@ -208,44 +210,9 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
             }
         });
 
-        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-
-        mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-
-        mAdapter = new EraMyAdapter(DailyTeachingActivity.this,TITLES, ICONS, NAME, EMAIL, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
-        // And passing the titles,icons,header view name, header view email,
-        // and header view profile picture
-
-        mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
-
-        mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-
-        mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
-
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
-            }
-
-
-        }; // Drawer Toggle Object Made
-        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
 
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -321,6 +288,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
 
         Log.e("getpoints", String.valueOf(classid));
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes/" + classid + "/chapters/" + chapter_id + "/get_points.json";
+        mProgress.show();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, loginURL, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -329,6 +297,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
                     boolean success = response.getBoolean("success");
                     List<PointsData> pointsList = new ArrayList<PointsData>();
                     if (success) {
+                        mProgress.dismiss();
                         JSONArray jsonArray = response.getJSONArray("points");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject pointsObj = jsonArray.getJSONObject(i);
@@ -365,7 +334,6 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
             }
         };
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
-
     }
 
     @Override
