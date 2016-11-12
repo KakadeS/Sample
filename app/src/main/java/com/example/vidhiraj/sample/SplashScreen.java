@@ -5,31 +5,31 @@ package com.example.vidhiraj.sample;
  */
 
 
-        import android.content.Intent;
-        import android.os.Bundle;
-        import android.support.v7.app.AppCompatActivity;
-        import android.view.animation.Animation;
-        import android.view.animation.AnimationUtils;
-        import android.widget.ImageView;
-        import android.widget.TextView;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 /**
  * Created by androiddev on 8/12/16.
  */
 public class SplashScreen extends AppCompatActivity {
-    TextView textView;
+    ImageView eracod_image;
 
-    @Override    protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
 
-        textView = (TextView) findViewById(R.id.text);
+        eracod_image = (ImageView) findViewById(R.id.eracord_pic);
         Thread timer = new Thread() {
             public void run() {
                 try {
                     Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
-                    textView.startAnimation(animation);
+                    eracod_image.startAnimation(animation);
                     sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -42,7 +42,8 @@ public class SplashScreen extends AppCompatActivity {
         timer.start();
     }
 
-    @Override    protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         finish();
 

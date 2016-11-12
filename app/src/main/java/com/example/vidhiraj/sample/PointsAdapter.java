@@ -57,11 +57,6 @@ public class PointsAdapter extends
 
                 contact.setSelected(cb.isChecked());
                 stList.get(pos).setSelected(cb.isChecked());
-
-                Toast.makeText(
-                        v.getContext(),
-                        "Clicked on Checkbox: " + cb.getText() + " is "
-                                + cb.isChecked(), Toast.LENGTH_SHORT).show();
             }
         });
 

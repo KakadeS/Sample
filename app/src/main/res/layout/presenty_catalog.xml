@@ -1,55 +1,86 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/DrawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="7dp">
+<android.support.v4.widget.NestedScrollView android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="wrap_content">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="2"
-    >
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"></include>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Presentee Catalog"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center"
+        android:gravity="center"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:scrollbars="vertical"
         />
     <TextView
         android:id="@+id/nodata"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
         android:text="No Data Available"
-        android:visibility="gone"
+        android:layout_marginTop="160dp"
         android:layout_gravity="center"
         android:gravity="center"
-
-        android:textSize="20sp"/>
+        android:textSize="15sp"/>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
-        android:layout_weight="1"
         >
     <Button
-        android:layout_width="180dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="SAVE"
+        android:text="UPDATE"
         android:visibility="gone"
-        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="30dp"
         android:id="@+id/savepresenty"
         android:textColor="@color/textcolor"
         android:background="@drawable/button_shape"
        />
-
-
     <Button
-        android:layout_width="180dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:text="CANCEL"
+        android:layout_marginBottom="5dp"
         android:visibility="gone"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="30dp"
         android:id="@+id/button"
         android:textColor="@color/textcolor"
         android:background="@drawable/button_shape"
       />
         </LinearLayout>
 </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/RecyclerView"
+        android:layout_width="320dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="#ffffff"
+        android:scrollbars="vertical">
+
+    </android.support.v7.widget.RecyclerView>
+
+</android.support.v4.widget.DrawerLayout>

@@ -50,18 +50,17 @@ import static com.example.vidhiraj.sample.Utils.*;
  */
 public class ClassActivity extends AppCompatActivity {
 
-    String TITLES[] = {"Home", "Change Password", "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog" , "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
-    String NAME = "Eracord";
-    String EMAIL;
-    int PROFILE = R.drawable.ic_photos;
+//    String NAME = "Eracord";
+    String org=null;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;
-
+    String url_icon=null;
 
     private static RecyclerView.Adapter adapter;
     private static RecyclerView recyclerView;
@@ -80,16 +79,10 @@ public class ClassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
-
-
-//        Intent emailIntent = getIntent();
-//        EMAIL = emailIntent.getStringExtra("email");
-//        ApiKeyConstant.user_email=EMAIL;
-
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String user_email = prefs.getString("email", null);
-
-
+        org=prefs.getString("specificorg",null);
+        url_icon=prefs.getString("org_icon",null);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         dataAvailability = (TextView) findViewById(R.id.nodata);
         fetchClassData();
@@ -110,41 +103,17 @@ public class ClassActivity extends AppCompatActivity {
                 }
             }
         });
-        BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
-        bottomBar.setItemsFromMenu(R.menu.main_menu, new OnMenuTabSelectedListener() {
-            @Override
-            public void onMenuItemSelected(int itemId) {
-                Intent intent;
-                switch (itemId) {
-                    case R.id.create_item:
-                        intent = new Intent(ClassActivity.this, ClassActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.student_item:
-                        intent = new Intent(ClassActivity.this, StudentListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.teach_item:
-                        intent = new Intent(ClassActivity.this, DailyCatalogActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-            }
-        });
-
-        // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
-        bottomBar.setActiveTabColor("#337ab7");
-
 
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(org);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
 
         mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-        mAdapter = new EraMyAdapter(ClassActivity.this, TITLES, ICONS, NAME, user_email, PROFILE);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mAdapter = new EraMyAdapter(ClassActivity.this, TITLES, ICONS,user_email,url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
 

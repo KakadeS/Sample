@@ -178,7 +178,6 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
                                 int id=response.getInt("dtp_id");
                                 String dtp_id= String.valueOf(id);
                                 Log.e("dtp id", String.valueOf(dtp_id));
-                                Toast.makeText(getBaseContext(), "Daily Catalog Saved", Toast.LENGTH_LONG).show();
                                 Intent intent1=new Intent(DailyTeachingActivity.this,PresentyCatalog.class);
                                 intent1.putExtra("dtp_id",dtp_id);
                                 Log.e("put extra dtp", String.valueOf(dtp_id));
@@ -219,15 +218,15 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-        startActivity(new Intent(DailyTeachingActivity.this, ClassActivity.class));
-        finish();
-
-    }
+//
+//    @Override
+//    public void onBackPressed()
+//    {
+//        super.onBackPressed();
+//        startActivity(new Intent(DailyTeachingActivity.this, ClassActivity.class));
+//        finish();
+//
+//    }
 
 
 

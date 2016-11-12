@@ -66,6 +66,9 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
     Spinner spinner;
     public static String MY_PREFS_NAME = null;
     List<Integer> organisationId = new ArrayList<Integer>();
+    String orgNameText = null;
+    String specific_org=null;
+    List<String> organisation = new ArrayList<String>();
     // Declaring Action Bar Drawer Toggle
 
     @Override
@@ -103,26 +106,21 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, loginURL, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                String orgNameText = null;
-
                 try {
                     boolean success = response.getBoolean("success");
-
                     if (success) {
                         mProgress.dismiss();
                         boolean multiple_organisations = response.getBoolean("multiple_organisations");
-                        List<String> organisation = new ArrayList<String>();
-
                         JSONArray jsonArray = response.getJSONArray("organisations");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject orgObj = jsonArray.getJSONObject(i);
                             orgNameText = orgObj.getString("organisation_name");
                             organisation.add(orgNameText);
-                            orgid=orgObj.getInt("organisation_id");
+                            orgid = orgObj.getInt("organisation_id");
                             organisationId.add(orgid);
                         }
                         if (multiple_organisations) {
-                            multiorg=true;
+                            multiorg = true;
                             Log.e("flag org is", String.valueOf(multiorg));
                             spinner.setVisibility(View.VISIBLE);
                             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, organisation);
@@ -134,10 +132,24 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                             org_name.setVisibility(View.VISIBLE);
                             org_name.setText(orgNameText);
                             spinner.setVisibility(View.GONE);
+                        }
+                    } else {
+                        mProgress.dismiss();
+                        Cursor cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+                        Log.e("record is", String.valueOf(cursor.getCount()));
+                        if (cursor.getCount() != 0) {
+                            UserDB userDB = new UserDB(getApplicationContext());
+                            SQLiteDatabase db = userDB.getWritableDatabase();
+                            db.execSQL("DELETE FROM " + UserDB.DATABASE_TABLE);
+                            cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
+                            Log.e("delete count", String.valueOf(cursor.getCount()));
 
+                            Toast.makeText(getBaseContext(), "Something went wrong,Please Register Again", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(AndroidSpinnerExampleActivity.this, MainActivity.class);
+                            startActivity(intent);
                         }
                     }
-                } catch (JSONException e) {
+                }catch (JSONException e) {
                     String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
                     Log.e("sdcard-err2:", err);
                 }
@@ -241,13 +253,15 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                             if(success)
                             {
                                 ApiKeyConstant.authToken=response.getString("token");
+                                String image_url=response.getString("logo_url");
                                 MY_PREFS_NAME = "MyPrefsFile";
                                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                                 editor.putString("email", finalEmail);
+                                editor.putString("specificorg",specific_org);
+                                editor.putString("org_icon",image_url);
                                 editor.commit();
                                 Intent intent=new Intent(AndroidSpinnerExampleActivity.this,ClassActivity.class);
 //                                intent.putExtra("token",ApiKeyConstant.authToken);
-//                                intent.putExtra("email",finalEmail);
                                   startActivity(intent);
                             }
 
@@ -264,7 +278,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                             public void onErrorResponse(VolleyError error) {
                                 Log.e("Volley", "Error");
                                 Toast.makeText(getBaseContext(), "Enter the correct pin", Toast.LENGTH_LONG).show();
-
                             }
                         }
                 );
@@ -316,6 +329,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
         for(int j=position;j<=position;j++)
         {
             org_id=organisationId.get(j);
+            specific_org=organisation.get(j);
             Log.e("for org_id", String.valueOf(org_id));
         }
         Log.e(" out org_id", String.valueOf(org_id));

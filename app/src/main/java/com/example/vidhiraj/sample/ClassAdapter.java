@@ -23,9 +23,9 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
 
     private ArrayList<ClassData> dataSet;
     private Context mcontext;
-    public ClassAdapter(Context mcontext, ArrayList<ClassData> data) {
+    public ClassAdapter(Context mcontext,ArrayList<ClassData> data) {
         this.dataSet = data;
-        this.mcontext=mcontext;
+        this.mcontext = mcontext;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

@@ -1,11 +1,16 @@
 package com.example.vidhiraj.sample;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +22,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,10 +35,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS_NAME;
+
 /**
  * Created by lenovo on 31/08/2016.
  */
 public class PresentyCatalog extends AppCompatActivity {
+
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog" , "Logout"};
+    int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
+    //String NAME = "Eracord";
+    String org=null;
+    int PROFILE = R.drawable.ic_photos;
+    private Toolbar toolbar;                              // Declaring the Toolbar Object
+    RecyclerView mDrawerRecyclerView;                           // Declaring RecyclerView
+    RecyclerView.Adapter mDrawerAdapter;                        // Declaring Adapter For Recycler View
+    RecyclerView.LayoutManager mLayoutManager;         // Declaring Layout Manager as a linear layout manager
+    DrawerLayout Drawer;                                  // Declaring DrawerLayout
+    ActionBarDrawerToggle mDrawerToggle;
+
+    private GoogleApiClient client;
+
 
 
     private static RecyclerView.Adapter adapter;
@@ -39,6 +63,7 @@ public class PresentyCatalog extends AppCompatActivity {
     private static ArrayList<PresentyData> data = null;
     Button savePresenty, cancelPresenty;
     TextView dataAvailabiliy;
+    String url_icon=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +75,50 @@ public class PresentyCatalog extends AppCompatActivity {
         savePresenty = (Button) findViewById(R.id.savepresenty);
         cancelPresenty = (Button) findViewById(R.id.button);
         dataAvailabiliy = (TextView) findViewById(R.id.nodata);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String user_email = prefs.getString("email", null);
+        org=prefs.getString("specificorg",null);
+        url_icon=prefs.getString("org_icon",null);
+
+        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(org);
+
+        mDrawerRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
+
+        mDrawerRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
+
+        mDrawerAdapter = new EraMyAdapter(PresentyCatalog.this, TITLES, ICONS, user_email,url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        // And passing the titles,icons,header view name, header view email,
+        // and header view profile picture
+
+        mDrawerRecyclerView.setAdapter(mDrawerAdapter);                              // Setting the adapter to RecyclerView
+
+        mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
+        mDrawerRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
+        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // open I am not going to put anything here)
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                // Code here will execute once drawer is closed
+            }
+        }; // Drawer Toggle Object Made
+        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
+        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
         String url = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/" + id + "/get_catlogs";
         Log.e("dtp url", url);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
@@ -109,7 +178,6 @@ public class PresentyCatalog extends AppCompatActivity {
         };
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
-
         cancelPresenty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,9 +225,9 @@ public class PresentyCatalog extends AppCompatActivity {
                         try {
                             boolean success = response.getBoolean("success");
                             if (success) {
-                                Toast.makeText(getBaseContext(), "Student Presenty Saved", Toast.LENGTH_LONG).show();
                                 Intent intent1 = new Intent(PresentyCatalog.this, DailyCatalogActivity.class);
                                 startActivity(intent1);
+                                Toast.makeText(getBaseContext(), "Student Presentee Saved", Toast.LENGTH_LONG).show();
                             }
 
                         } catch (JSONException e) {
@@ -186,7 +254,12 @@ public class PresentyCatalog extends AppCompatActivity {
                 VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
             }
         });
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(PresentyCatalog.this, DailyCatalogActivity.class));
+        finish();
     }
 }

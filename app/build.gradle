@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.vidhiraj.sample"
-        minSdkVersion 12
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -29,6 +29,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     //compile 'com.mcxiaoke.volley:library-aar:1.0.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.roughike:bottom-bar:1.2.1'
     compile 'com.google.android.gms:play-services:9.4.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'

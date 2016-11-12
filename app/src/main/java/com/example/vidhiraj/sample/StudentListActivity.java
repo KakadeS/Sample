@@ -2,12 +2,16 @@ package com.example.vidhiraj.sample;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,6 +26,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabSelectedListener;
 
@@ -34,10 +40,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS_NAME;
+
 /**
  * Created by lenovo on 22/08/2016.
  */
 public class StudentListActivity extends AppCompatActivity {
+
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog" , "Logout"};
+    int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
+    //String NAME = "Eracord";
+    String org=null;
+    int PROFILE = R.drawable.ic_photos;
+    private Toolbar toolbar;                              // Declaring the Toolbar Object
+    RecyclerView mDrawerRecyclerView;                           // Declaring RecyclerView
+    RecyclerView.Adapter mDrawerAdapter;                        // Declaring Adapter For Recycler View
+    RecyclerView.LayoutManager mLayoutManagers;         // Declaring Layout Manager as a linear layout manager
+    DrawerLayout Drawer;                                  // Declaring DrawerLayout
+    ActionBarDrawerToggle mDrawerToggle;
+
+    private GoogleApiClient client;
+
 
     private TextView tvEmptyView;
     private RecyclerView mRecyclerView;
@@ -49,6 +72,8 @@ public class StudentListActivity extends AppCompatActivity {
     EditText search;
     ProgressDialog pDialog;
     TextView dataAvailability;
+    String url_icon;
+    ProgressDialog mProgress;
     // private List<StudentData> studentList;
 
     String url= ApiKeyConstant.apiUrl + "/api/v1/students";
@@ -62,37 +87,61 @@ public class StudentListActivity extends AppCompatActivity {
        // tvEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         dataAvailability=(TextView)findViewById(R.id.nodata);
-        BottomBar bottomBar = BottomBar.attach(this, savedInstanceState);
-        bottomBar.setItemsFromMenu(R.menu.main_menu3, new OnMenuTabSelectedListener() {
+
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String user_email = prefs.getString("email", null);
+        org=prefs.getString("specificorg",null);
+        url_icon=prefs.getString("org_icon",null);
+
+        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(org);
+
+        mDrawerRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
+
+        mDrawerRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
+
+        mDrawerAdapter = new EraMyAdapter(StudentListActivity.this, TITLES, ICONS, user_email,url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        // And passing the titles,icons,header view name, header view email,
+        // and header view profile picture
+
+        mDrawerRecyclerView.setAdapter(mDrawerAdapter);                              // Setting the adapter to RecyclerView
+
+        mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
+        mDrawerRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
+        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
+
             @Override
-            public void onMenuItemSelected(int itemId) {
-                Intent intent;
-                switch (itemId) {
-                    case R.id.create_item:
-                        intent=new Intent(StudentListActivity.this,ClassActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.student_item:
-                        intent=new Intent(StudentListActivity.this,StudentListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.teach_item:
-                        intent=new Intent(StudentListActivity.this,DailyCatalogActivity.class);
-                        startActivity(intent);
-                        break;
-                }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // open I am not going to put anything here)
             }
-        });
-
-        // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
-        bottomBar.setActiveTabColor("#337ab7");
-
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                // Code here will execute once drawer is closed
+            }
+        }; // Drawer Toggle Object Made
+        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
+        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         load = (Button) findViewById(R.id.loadmore);
         dailyTeach = new ArrayList<StudentData>();
         handler = new Handler();
         //  loadData();
         search= (EditText) findViewById(R.id.search);
+        mProgress.show();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -100,6 +149,7 @@ public class StudentListActivity extends AppCompatActivity {
                 try {
                     boolean success = response.getBoolean("success");
                     if (success) {
+                        mProgress.dismiss();
                         Log.e("first success", "sss");
                         JSONArray jsonArray = response.getJSONArray("students");
                         Log.e("json array", String.valueOf(jsonArray));
@@ -229,8 +279,8 @@ public class StudentListActivity extends AppCompatActivity {
                     current_page += 1;
 
                     // Next page request
-                    url = ApiKeyConstant.apiUrl + "/api/v1/students&page="+ current_page;
-
+                    url = ApiKeyConstant.apiUrl + "/api/v1/students?&page="+ current_page;
+                    mProgress.show();
                     JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -238,6 +288,7 @@ public class StudentListActivity extends AppCompatActivity {
                             try {
                                 boolean success = response.getBoolean("success");
                                 if (success) {
+                                    mProgress.dismiss();
                                     Log.e("first success", "sss");
                                     JSONArray jsonArray = response.getJSONArray("students");
                                     int arrayLength=jsonArray.length();
@@ -260,6 +311,11 @@ public class StudentListActivity extends AppCompatActivity {
                                             Log.e("data is", String.valueOf(dailyTeach));
                                             mAdapter.notifyItemInserted(dailyTeach.size());
                                         }
+                                    if(arrayLength == 0)
+                                    {
+                                        load.setVisibility(View.INVISIBLE);
+                                        Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
+                                    }
 
 
                                 }
