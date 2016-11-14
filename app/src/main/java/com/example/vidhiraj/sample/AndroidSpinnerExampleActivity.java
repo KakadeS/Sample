@@ -159,7 +159,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley", "Error");
+                        Log.e("Volley",error.getMessage());
                         mProgress.dismiss();
 
                     }

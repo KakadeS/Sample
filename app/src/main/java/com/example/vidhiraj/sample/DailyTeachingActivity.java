@@ -2,6 +2,7 @@ package com.example.vidhiraj.sample;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -44,13 +46,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS_NAME;
+
 /**
  * Created by vidhiraj on 10-08-2016.
  */
 public class DailyTeachingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private Toolbar toolbar;                              // Declaring the Toolbar Object
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
-    RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
+    // Declaring Layout Manager as a linear layout manager
     List<Integer> chapter_array = new ArrayList<Integer>();
     String classid;
     Button createCatalog,cancelCatalog;
@@ -58,6 +61,25 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
     Integer chapter_id = null;
     RecyclerView mRecyclerView;
     ProgressDialog mProgress;
+    TextView date_selected;
+    int day,month,year;
+
+
+
+
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
+    int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
+    //String NAME = "Eracord";
+    String org = null;
+    int PROFILE = R.drawable.ic_photos;
+    private Toolbar toolbar;                              // Declaring the Toolbar Object
+    RecyclerView mDrawerRecyclerView;                           // Declaring RecyclerView
+    RecyclerView.Adapter mDrawerAdapter;                        // Declaring Adapter For Recycler View
+    RecyclerView.LayoutManager mLayoutManagers;         // Declaring Layout Manager as a linear layout manager
+    DrawerLayout Drawer;                                  // Declaring DrawerLayout
+    ActionBarDrawerToggle mDrawerToggle;
+    String url_icon;
+
     // Declaring Action Bar Drawer Toggle
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -74,16 +96,69 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         mProgress.setMessage("Please wait...");
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);
-
-
+        date_selected=(TextView)findViewById(R.id.selected_date);
         final Intent intent = getIntent();
-        classid= intent.getStringExtra("teach_id");
+        classid= intent.getStringExtra("teachId");
+        day=intent.getIntExtra("day",0);
+                month=intent.getIntExtra("month",0);
+                year=intent.getIntExtra("year",0);
+        date_selected.setText("Date is : " + day +" / " + (month+1) + " / " + year);
+
         Log.e("getchap", String.valueOf(classid));
-        String token = intent.getStringExtra("auth_token");
+    //    String token = intent.getStringExtra("auth_token");
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         createCatalog= (Button) findViewById(R.id.buttonCreate);
         cancelCatalog= (Button) findViewById(R.id.buttonCancel);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String user_email = prefs.getString("email", null);
+        org = prefs.getString("specificorg", null);
+        url_icon = prefs.getString("org_icon", null);
+        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(org);
+
+        mDrawerRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
+
+        mDrawerRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
+
+        mDrawerAdapter = new EraMyAdapter(DailyTeachingActivity.this, TITLES, ICONS, user_email, url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        // And passing the titles,icons,header view name, header view email,
+        // and header view profile picture
+
+        mDrawerRecyclerView.setAdapter(mDrawerAdapter);                              // Setting the adapter to RecyclerView
+
+        mLayoutManagers = new LinearLayoutManager(this);                 // Creating a layout Manager
+
+        mDrawerRecyclerView.setLayoutManager(mLayoutManagers);                 // Setting the layout Manager
+
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // open I am not going to put anything here)
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                // Code here will execute once drawer is closed
+            }
+
+
+        }; // Drawer Toggle Object Made
+        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
+        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes/" + classid + "/get_chapters.json";
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, loginURL, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
@@ -208,15 +283,8 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
                 VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
             }
         });
-
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-
-
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 //
 //    @Override
@@ -276,7 +344,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         Log.e("selected","done");
         String item=null;
         Intent intent=getIntent();
-        classid= intent.getStringExtra("teach_id");
+        classid= intent.getStringExtra("teachId");
         for(int j=position;j<=position;j++)
         {
             item= parent.getItemAtPosition(position).toString();

@@ -47,10 +47,10 @@ import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS
  */
 public class StudentListActivity extends AppCompatActivity {
 
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog" , "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     //String NAME = "Eracord";
-    String org=null;
+    String org = null;
     int PROFILE = R.drawable.ic_photos;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     RecyclerView mDrawerRecyclerView;                           // Declaring RecyclerView
@@ -76,7 +76,7 @@ public class StudentListActivity extends AppCompatActivity {
     ProgressDialog mProgress;
     // private List<StudentData> studentList;
 
-    String url= ApiKeyConstant.apiUrl + "/api/v1/students";
+    String url = ApiKeyConstant.apiUrl + "/api/v1/students";
     protected Handler handler;
 
     @Override
@@ -84,9 +84,9 @@ public class StudentListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.student_catalog);
         //  toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // tvEmptyView = (TextView) findViewById(R.id.empty_view);
+        // tvEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        dataAvailability=(TextView)findViewById(R.id.nodata);
+        dataAvailability = (TextView) findViewById(R.id.nodata);
 
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Processing...");
@@ -96,8 +96,8 @@ public class StudentListActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String user_email = prefs.getString("email", null);
-        org=prefs.getString("specificorg",null);
-        url_icon=prefs.getString("org_icon",null);
+        org = prefs.getString("specificorg", null);
+        url_icon = prefs.getString("org_icon", null);
 
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -108,7 +108,7 @@ public class StudentListActivity extends AppCompatActivity {
 
         mDrawerRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-        mDrawerAdapter = new EraMyAdapter(StudentListActivity.this, TITLES, ICONS, user_email,url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mDrawerAdapter = new EraMyAdapter(StudentListActivity.this, TITLES, ICONS, user_email, url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
 
@@ -124,6 +124,7 @@ public class StudentListActivity extends AppCompatActivity {
                 // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
                 // open I am not going to put anything here)
             }
+
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -140,12 +141,12 @@ public class StudentListActivity extends AppCompatActivity {
         dailyTeach = new ArrayList<StudentData>();
         handler = new Handler();
         //  loadData();
-        search= (EditText) findViewById(R.id.search);
+        search = (EditText) findViewById(R.id.search);
         mProgress.show();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("url is",url);
+                Log.e("url is", url);
                 try {
                     boolean success = response.getBoolean("success");
                     if (success) {
@@ -153,13 +154,12 @@ public class StudentListActivity extends AppCompatActivity {
                         Log.e("first success", "sss");
                         JSONArray jsonArray = response.getJSONArray("students");
                         Log.e("json array", String.valueOf(jsonArray));
-                        int arrayLength=jsonArray.length();
+                        int arrayLength = jsonArray.length();
                         Log.e("array length is", String.valueOf(arrayLength));
-                        if(arrayLength >= 10)
-                        {
+                        if (arrayLength >= 10) {
                             load.setVisibility(View.VISIBLE);
                         }
-                        if(jsonArray.length()!=0) {
+                        if (jsonArray.length() != 0) {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 Log.e("for loop", String.valueOf(jsonArray.length()));
                                 JSONObject orgObj = jsonArray.getJSONObject(i);
@@ -171,10 +171,8 @@ public class StudentListActivity extends AppCompatActivity {
                                 dailyTeach.add(dailyData);
                                 Log.e("data is", String.valueOf(dailyTeach));
                                 // mAdapter.notifyItemInserted(dailyTeach.size());
-
                             }
-                        }
-                        else {
+                        } else {
                             dataAvailability.setVisibility(View.VISIBLE);
                         }
                     }
@@ -182,7 +180,7 @@ public class StudentListActivity extends AppCompatActivity {
                     mRecyclerView.setHasFixedSize(true);
                     mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     mRecyclerView.setLayoutManager(mLayoutManager);
-                    mAdapter = new StudentCatalogAdapter(dailyTeach,getApplicationContext());
+                    mAdapter = new StudentCatalogAdapter(dailyTeach, getApplicationContext());
                     mRecyclerView.setAdapter(mAdapter);
                 } catch (JSONException e) {
                     String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
@@ -193,7 +191,7 @@ public class StudentListActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        mProgress.dismiss();
                         Log.e("Volley", "Error");
                     }
                 }) {
@@ -201,7 +199,7 @@ public class StudentListActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("Authorization",ApiKeyConstant.authToken);
+                headers.put("Authorization", ApiKeyConstant.authToken);
                 return headers;
             }
         };
@@ -217,14 +215,12 @@ public class StudentListActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(StudentListActivity.this, ClassActivity.class));
         finish();
 
     }
-
 
 
     public void addTextListener() {
@@ -252,7 +248,7 @@ public class StudentListActivity extends AppCompatActivity {
                 }
 
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(StudentListActivity.this));
-                mAdapter = new StudentCatalogAdapter(filteredList,StudentListActivity.this);
+                mAdapter = new StudentCatalogAdapter(filteredList, StudentListActivity.this);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();  // data set changed
             }
@@ -279,7 +275,7 @@ public class StudentListActivity extends AppCompatActivity {
                     current_page += 1;
 
                     // Next page request
-                    url = ApiKeyConstant.apiUrl + "/api/v1/students?&page="+ current_page;
+                    url = ApiKeyConstant.apiUrl + "/api/v1/students?&page=" + current_page;
                     mProgress.show();
                     JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
                         @Override
@@ -291,30 +287,28 @@ public class StudentListActivity extends AppCompatActivity {
                                     mProgress.dismiss();
                                     Log.e("first success", "sss");
                                     JSONArray jsonArray = response.getJSONArray("students");
-                                    int arrayLength=jsonArray.length();
+                                    int arrayLength = jsonArray.length();
                                     Log.e("array length is", String.valueOf(arrayLength));
-                                    if(arrayLength >= 10)
-                                    {
+                                    if (arrayLength >= 10) {
                                         load.setVisibility(View.VISIBLE);
                                     }
 
-                                        Log.e("json array", String.valueOf(jsonArray));
-                                        for (int i = 0; i < jsonArray.length(); i++) {
-                                            Log.e("for loop", String.valueOf(jsonArray.length()));
-                                            JSONObject orgObj = jsonArray.getJSONObject(i);
-                                            Log.e("json obj", String.valueOf(orgObj));
-                                            StudentData dailyData = new StudentData();
-                                            dailyData.stud_name = orgObj.getString("name");
-                                            dailyData.stud_class_name = orgObj.getString("class_names");
-                                            dailyData.stud_hostel = orgObj.getBoolean("has_hostel");
-                                            dailyTeach.add(dailyData);
-                                            Log.e("data is", String.valueOf(dailyTeach));
-                                            mAdapter.notifyItemInserted(dailyTeach.size());
-                                        }
-                                    if(arrayLength == 0)
-                                    {
-                                        load.setVisibility(View.INVISIBLE);
-                                        Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
+                                    Log.e("json array", String.valueOf(jsonArray));
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        Log.e("for loop", String.valueOf(jsonArray.length()));
+                                        JSONObject orgObj = jsonArray.getJSONObject(i);
+                                        Log.e("json obj", String.valueOf(orgObj));
+                                        StudentData dailyData = new StudentData();
+                                        dailyData.stud_name = orgObj.getString("name");
+                                        dailyData.stud_class_name = orgObj.getString("class_names");
+                                        dailyData.stud_hostel = orgObj.getBoolean("has_hostel");
+                                        dailyTeach.add(dailyData);
+                                        Log.e("data is", String.valueOf(dailyTeach));
+                                        mAdapter.notifyItemInserted(dailyTeach.size());
+                                    }
+                                    if (arrayLength == 0) {
+                                        load.setVisibility(View.GONE);
+                                        Toast.makeText(getApplicationContext(), "No More Data to laod", Toast.LENGTH_LONG).show();
                                     }
 
 
@@ -330,16 +324,16 @@ public class StudentListActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                   load.setVisibility(View.GONE);
-                                    Toast.makeText(getApplicationContext(),"No More Data to laod",Toast.LENGTH_LONG).show();
-                                    Log.e("Poonam", "Error");
+                                    load.setVisibility(View.GONE);
+                                    Toast.makeText(getApplicationContext(), "No More Data to laod", Toast.LENGTH_LONG).show();
+                                    Log.e("Poonam", error.getMessage());
                                 }
                             }) {
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             HashMap<String, String> headers = new HashMap<String, String>();
                             headers.put("Content-Type", "application/json; charset=utf-8");
-                            headers.put("Authorization",ApiKeyConstant.authToken);
+                            headers.put("Authorization", ApiKeyConstant.authToken);
                             return headers;
                         }
                     };
@@ -358,48 +352,6 @@ public class StudentListActivity extends AppCompatActivity {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //    // load initial data
@@ -577,31 +529,6 @@ public class StudentListActivity extends AppCompatActivity {
 ////        });
 ////    }
 //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //package com.example.vidhiraj.sample;

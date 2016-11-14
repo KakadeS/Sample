@@ -56,6 +56,10 @@
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation"
             android:screenOrientation="unspecified"></activity>
         <activity
+            android:name=".CatalogSchedule"
+            android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="unspecified"></activity>
+        <activity
             android:name=".StudentListActivity"
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation"
             android:screenOrientation="unspecified"></activity>

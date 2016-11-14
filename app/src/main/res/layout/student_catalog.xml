@@ -51,11 +51,6 @@
                 android:textSize="20sp" />
 
         </RelativeLayout>
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/my_recycler_view"
@@ -73,7 +68,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
                     android:visibility="gone" />
-            </LinearLayout>
+
 
 
         <Button

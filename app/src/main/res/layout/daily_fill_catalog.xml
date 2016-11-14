@@ -5,56 +5,62 @@
     android:layout_height="match_parent"
     android:elevation="7dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <include
-            android:id="@+id/tool_bar"
-            layout="@layout/tool_bar">
-        </include>
-
-        <TextView
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Daily Teaches"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/my_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            <include
+                android:id="@+id/tool_bar"
+                layout="@layout/tool_bar"></include>
 
-        <TextView
-            android:id="@+id/noData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_marginTop="50dp"
-            android:visibility="gone"
-            android:text="No Data Available"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Daily Teaches"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/loadmore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Load More"
-            android:textColor="@color/textcolor"
-            android:visibility="gone"
-            />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/my_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/noData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:gravity="center"
+                android:text="No Data Available"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:visibility="gone" />
 
+            <Button
+                android:id="@+id/loadmore"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/button_shape"
+                android:gravity="center"
+                android:text="Load More"
+                android:visibility="gone"
+                android:textColor="@color/textcolor" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/RecyclerView"

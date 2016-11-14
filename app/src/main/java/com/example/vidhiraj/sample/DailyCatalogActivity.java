@@ -48,10 +48,10 @@ import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS
 
 public class DailyCatalogActivity extends AppCompatActivity {
 
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog" , "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     //String NAME = "Eracord";
-    String org=null;
+    String org = null;
     int PROFILE = R.drawable.ic_photos;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
@@ -85,11 +85,10 @@ public class DailyCatalogActivity extends AppCompatActivity {
         mProgress.setMessage("Please wait...");
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);
-
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String user_email = prefs.getString("email", null);
-        org=prefs.getString("specificorg",null);
-        url_icon=prefs.getString("org_icon",null);
+        org = prefs.getString("specificorg", null);
+        url_icon = prefs.getString("org_icon", null);
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -99,7 +98,7 @@ public class DailyCatalogActivity extends AppCompatActivity {
 
         mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-        mAdapter = new EraMyAdapter(DailyCatalogActivity.this, TITLES, ICONS, user_email,url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mAdapter = new EraMyAdapter(DailyCatalogActivity.this, TITLES, ICONS, user_email, url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
 
@@ -181,7 +180,6 @@ public class DailyCatalogActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        Log.e("Volley", "Error");
                         mProgress.dismiss();
                     }
                 }) {
