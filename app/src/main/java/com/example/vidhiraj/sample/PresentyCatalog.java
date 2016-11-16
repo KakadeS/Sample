@@ -1,5 +1,6 @@
 package com.example.vidhiraj.sample;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -62,9 +63,11 @@ public class PresentyCatalog extends AppCompatActivity {
     private static RecyclerView recyclerView;
     private static ArrayList<PresentyData> data = null;
     Button savePresenty, cancelPresenty;
-    TextView dataAvailabiliy;
+    TextView dataAvailabiliy,totalPresent,totalAbsent;
     String url_icon=null;
-
+    int countPresent=0;
+    int countAbsent=0;
+    ProgressDialog mProgress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,10 +75,16 @@ public class PresentyCatalog extends AppCompatActivity {
         final Intent intent = getIntent();
         final String id = intent.getStringExtra("dtp_id");
         Log.e("next dtp", String.valueOf(id));
+        mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Processing...");
+        mProgress.setMessage("Please wait...");
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
         savePresenty = (Button) findViewById(R.id.savepresenty);
         cancelPresenty = (Button) findViewById(R.id.button);
         dataAvailabiliy = (TextView) findViewById(R.id.nodata);
-
+        totalPresent=(TextView)findViewById(R.id.totalpresent);
+        totalAbsent= (TextView) findViewById(R.id.totalabsent);
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String user_email = prefs.getString("email", null);
         org=prefs.getString("specificorg",null);
@@ -121,6 +130,7 @@ public class PresentyCatalog extends AppCompatActivity {
 
         String url = ApiKeyConstant.apiUrl + "/api/v1/daily_teachs/" + id + "/get_catlogs";
         Log.e("dtp url", url);
+        mProgress.show();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -128,6 +138,7 @@ public class PresentyCatalog extends AppCompatActivity {
                 try {
                     boolean success = response.getBoolean("success");
                     if (success) {
+                        mProgress.dismiss();
                         savePresenty.setVisibility(View.VISIBLE);
                         cancelPresenty.setVisibility(View.VISIBLE);
                         JSONArray jsonArray = response.getJSONArray("class_catlogs");
@@ -137,9 +148,20 @@ public class PresentyCatalog extends AppCompatActivity {
                                 PresentyData classData = new PresentyData();
                                 classData.setName(orgObj.getString("name"));
                                 classData.setSelected(orgObj.getBoolean("is_present"));
+                                boolean totalcount=orgObj.getBoolean("is_present");
+                                if(totalcount)
+                                {
+                                    countPresent++;
+                                }
+                                else {
+                                    countAbsent++;
+                                }
                                 classData.setPointId(orgObj.getInt("id"));
                                 data.add(classData);
                             }
+                            totalAbsent.setText(Integer.toString(countAbsent));
+                            totalPresent.setText(Integer.toString(countPresent));
+
                         } else {
                             savePresenty.setVisibility(View.GONE);
                             cancelPresenty.setVisibility(View.GONE);
@@ -164,7 +186,8 @@ public class PresentyCatalog extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        mProgress.dismiss();
+                        dataAvailabiliy.setVisibility(View.VISIBLE);
                         Log.e("Volley", "Error");
                     }
                 }) {

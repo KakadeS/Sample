@@ -65,8 +65,11 @@ public class PresentyAdapter extends
         viewHolder.chkSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //set your object's last status
-                stList.get(position).setSelected(isChecked);
+                if(isChecked)
+                {
+                }
+                else {
+                }
             }
         });
 
