@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -31,7 +31,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +42,10 @@ import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS
  */
 public class PresentyCatalog extends AppCompatActivity {
 
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog" , "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     //String NAME = "Eracord";
-    String org=null;
+    String org = null;
     int PROFILE = R.drawable.ic_photos;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     RecyclerView mDrawerRecyclerView;                           // Declaring RecyclerView
@@ -58,16 +57,16 @@ public class PresentyCatalog extends AppCompatActivity {
     private GoogleApiClient client;
 
 
-
     private static RecyclerView.Adapter adapter;
     private static RecyclerView recyclerView;
     private static ArrayList<PresentyData> data = null;
     Button savePresenty, cancelPresenty;
-    TextView dataAvailabiliy,totalPresent,totalAbsent;
-    String url_icon=null;
-    int countPresent=0;
-    int countAbsent=0;
+    TextView dataAvailabiliy, totalPresent, totalAbsent;
+    String url_icon = null;
+    int countPresent = 0;
+    int countAbsent = 0;
     ProgressDialog mProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,12 +82,12 @@ public class PresentyCatalog extends AppCompatActivity {
         savePresenty = (Button) findViewById(R.id.savepresenty);
         cancelPresenty = (Button) findViewById(R.id.button);
         dataAvailabiliy = (TextView) findViewById(R.id.nodata);
-        totalPresent=(TextView)findViewById(R.id.totalpresent);
-        totalAbsent= (TextView) findViewById(R.id.totalabsent);
+        totalPresent = (TextView) findViewById(R.id.totalpresent);
+        totalAbsent = (TextView) findViewById(R.id.totalabsent);
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String user_email = prefs.getString("email", null);
-        org=prefs.getString("specificorg",null);
-        url_icon=prefs.getString("org_icon",null);
+        org = prefs.getString("specificorg", null);
+        url_icon = prefs.getString("org_icon", null);
 
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -99,7 +98,7 @@ public class PresentyCatalog extends AppCompatActivity {
 
         mDrawerRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
 
-        mDrawerAdapter = new EraMyAdapter(PresentyCatalog.this, TITLES, ICONS, user_email,url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mDrawerAdapter = new EraMyAdapter(PresentyCatalog.this, TITLES, ICONS, user_email, url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         // And passing the titles,icons,header view name, header view email,
         // and header view profile picture
 
@@ -115,6 +114,7 @@ public class PresentyCatalog extends AppCompatActivity {
                 // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
                 // open I am not going to put anything here)
             }
+
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -148,12 +148,10 @@ public class PresentyCatalog extends AppCompatActivity {
                                 PresentyData classData = new PresentyData();
                                 classData.setName(orgObj.getString("name"));
                                 classData.setSelected(orgObj.getBoolean("is_present"));
-                                boolean totalcount=orgObj.getBoolean("is_present");
-                                if(totalcount)
-                                {
+                                boolean totalcount = orgObj.getBoolean("is_present");
+                                if (totalcount) {
                                     countPresent++;
-                                }
-                                else {
+                                } else {
                                     countAbsent++;
                                 }
                                 classData.setPointId(orgObj.getInt("id"));
@@ -186,9 +184,15 @@ public class PresentyCatalog extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        mProgress.dismiss();
-                        dataAvailabiliy.setVisibility(View.VISIBLE);
-                        Log.e("Volley", "Error");
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 401) {
+                            Intent intent = new Intent(PresentyCatalog.this, AndroidSpinnerExampleActivity.class);
+                            startActivity(intent);
+                        } else {
+                            mProgress.dismiss();
+                            dataAvailabiliy.setVisibility(View.VISIBLE);
+                            Log.e("Volley", "Error");
+                        }
                     }
                 }) {
             @Override
@@ -263,7 +267,13 @@ public class PresentyCatalog extends AppCompatActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getBaseContext(), "Student Presenty Not Saved", Toast.LENGTH_LONG).show();
+                                NetworkResponse networkResponse = error.networkResponse;
+                                if (networkResponse != null && networkResponse.statusCode == 401) {
+                                    Intent intent = new Intent(PresentyCatalog.this, AndroidSpinnerExampleActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(getBaseContext(), "Student Presenty Not Saved", Toast.LENGTH_LONG).show();
+                                }
                             }
                         }) {
                     @Override

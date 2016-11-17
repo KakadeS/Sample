@@ -1,7 +1,6 @@
 package com.example.vidhiraj.sample;
 
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,11 +8,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,12 +19,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -40,9 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by vidhiraj on 10-08-2016.
@@ -55,19 +48,19 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     TextView signDiffUser;
-     TextView useremail;
+    TextView useremail;
     ActionBarDrawerToggle mDrawerToggle;
     EditText editPassword;
     String finalEmail;
     String device_id;
     ProgressDialog mProgress;
-    boolean multiorg=false;
-    int orgid,org_id;
+    boolean multiorg = false;
+    int orgid, org_id;
     Spinner spinner;
     public static String MY_PREFS_NAME = null;
     List<Integer> organisationId = new ArrayList<Integer>();
     String orgNameText = null;
-    String specific_org=null;
+    String specific_org = null;
     List<String> organisation = new ArrayList<String>();
     // Declaring Action Bar Drawer Toggle
 
@@ -75,15 +68,15 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_org);
-        spinner= (Spinner) findViewById(R.id.spinner);
+        spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
-        useremail=(TextView) findViewById(R.id.useremail);
+        useremail = (TextView) findViewById(R.id.useremail);
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Processing...");
         mProgress.setMessage("Please wait...");
         mProgress.setCancelable(false);
         mProgress.setIndeterminate(true);
-        device_id= Settings.Secure.getString(getApplicationContext().getContentResolver(),
+        device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         Log.e("id is", device_id);
         Cursor cursor = null;
@@ -149,7 +142,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                             startActivity(intent);
                         }
                     }
-                }catch (JSONException e) {
+                } catch (JSONException e) {
                     String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
                     Log.e("sdcard-err2:", err);
                 }
@@ -159,7 +152,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley",error.getMessage());
+                        Log.e("Volley", error.getMessage());
                         mProgress.dismiss();
 
                     }
@@ -172,29 +165,21 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
 
-
-
-        editPassword= (EditText) findViewById(R.id.editTextPassword);
+        editPassword = (EditText) findViewById(R.id.editTextPassword);
         signDiffUser = (TextView) findViewById(R.id.diffuser);
         signDiffUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                Cursor cursor = getContentResolver().query(User.CONTENT_URI, null, null, null, null);
-//                Log.e("count is", String.valueOf(cursor.getCount()));
-               // UserDB userDB = new UserDB(getApplicationContext());
-//                SQLiteDatabase db = userDB.getWritableDatabase();
-//                db.execSQL("DELETE FROM " + UserDB.DATABASE_TABLE);
-                boolean signdiffflag=true;
+                boolean signdiffflag = true;
                 Intent intent = new Intent(AndroidSpinnerExampleActivity.this, MainActivity.class);
-                intent.putExtra("diffflag",signdiffflag);
+                intent.putExtra("diffflag", signdiffflag);
                 finish();
                 startActivity(intent);
 
             }
         });
         spinBtn = (Button) findViewById(R.id.buttonLogin);
-         finalEmail = email;
+        finalEmail = email;
         spinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,11 +193,10 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
             }
         });
 
-    toolbar=(Toolbar)
-    findViewById(R.id.tool_bar);
-    setSupportActionBar(toolbar);
-}
-
+        toolbar = (Toolbar)
+                findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+    }
 
 
     public void validateCheck() throws JSONException {
@@ -220,68 +204,63 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
             onLoginFailed();
             return;
         } else {
-                final String user_password=editPassword.getText().toString();
-                Log.e("user",user_password);
+            final String user_password = editPassword.getText().toString();
+            Log.e("user", user_password);
 
-                JSONObject userObj=new JSONObject();
-                JSONObject user=new JSONObject();
+            JSONObject userObj = new JSONObject();
+            JSONObject user = new JSONObject();
 
-                try {
-                    userObj.put("email", finalEmail);
-                    userObj.put("device_id",device_id);
-                    userObj.put("mpin",user_password);
-                    Log.e("flag org is", String.valueOf(multiorg));
-                    if(multiorg)
-                    {
-                        userObj.put("organisation_id",org_id);
-                        Log.e("org_id is", String.valueOf(org_id));
-                    }
-
-                    user.put("user",userObj);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            try {
+                userObj.put("email", finalEmail);
+                userObj.put("device_id", device_id);
+                userObj.put("mpin", user_password);
+                Log.e("flag org is", String.valueOf(multiorg));
+                if (multiorg) {
+                    userObj.put("organisation_id", org_id);
+                    Log.e("org_id is", String.valueOf(org_id));
                 }
-                Log.e("user", String.valueOf(user));
-                String loginURL = ApiKeyConstant.apiUrl +"/users/mpin_sign_in";
 
-                JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,loginURL,user, new Response.Listener<JSONObject>(){
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success=response.getBoolean("success");
-                            if(success)
-                            {
-                                ApiKeyConstant.authToken=response.getString("token");
-                                String image_url=response.getString("logo_url");
-                                MY_PREFS_NAME = "MyPrefsFile";
-                                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                                editor.putString("email", finalEmail);
-                                editor.putString("specificorg",specific_org);
-                                editor.putString("org_icon",image_url);
-                                editor.commit();
-                                Intent intent=new Intent(AndroidSpinnerExampleActivity.this,ClassActivity.class);
-//                                intent.putExtra("token",ApiKeyConstant.authToken);
-                                  startActivity(intent);
-                            }
+                user.put("user", userObj);
 
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.e("user", String.valueOf(user));
+            String loginURL = ApiKeyConstant.apiUrl + "/users/mpin_sign_in";
 
-                        } catch (JSONException e) {
-                            String err = (e.getMessage()==null)?"SD Card failed":e.getMessage();
-                            Log.e("sdcard-err2:",err);
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, loginURL, user, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        boolean success = response.getBoolean("success");
+                        if (success) {
+                            ApiKeyConstant.authToken = response.getString("token");
+                            String image_url = response.getString("logo_url");
+                            MY_PREFS_NAME = "MyPrefsFile";
+                            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                            editor.putString("email", finalEmail);
+                            editor.putString("specificorg", specific_org);
+                            editor.putString("org_icon", image_url);
+                            editor.commit();
+                            Intent intent = new Intent(AndroidSpinnerExampleActivity.this, ClassActivity.class);
+                            startActivity(intent);
                         }
 
+                    } catch (JSONException e) {
+                        String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
+                        Log.e("sdcard-err2:", err);
                     }
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                              //  Log.e("Volley",error.getMessage());
-                                Toast.makeText(getBaseContext(), "Enter the correct pin", Toast.LENGTH_LONG).show();
-                            }
+
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getBaseContext(), "Enter the correct pin", Toast.LENGTH_LONG).show();
                         }
-                );
-                VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
+                    }
+            );
+            VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
 
 
         }
@@ -295,7 +274,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
     public boolean validate() {
         boolean valid = true;
         String userpin = editPassword.getText().toString();
-        if (userpin.length()!=4 ) {
+        if (userpin.length() != 4) {
             editPassword.setError("enter only 4 digit pin");
             valid = false;
         } else {
@@ -305,6 +284,7 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
         }
         return valid;
     }
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
@@ -325,11 +305,10 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.e("in orgid","done");
-        for(int j=position;j<=position;j++)
-        {
-            org_id=organisationId.get(j);
-            specific_org=organisation.get(j);
+        Log.e("in orgid", "done");
+        for (int j = position; j <= position; j++) {
+            org_id = organisationId.get(j);
+            specific_org = organisation.get(j);
             Log.e("for org_id", String.valueOf(org_id));
         }
         Log.e(" out org_id", String.valueOf(org_id));
@@ -340,8 +319,6 @@ public class AndroidSpinnerExampleActivity extends AppCompatActivity implements 
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-
 
 
 }

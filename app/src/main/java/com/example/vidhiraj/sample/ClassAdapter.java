@@ -10,26 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
-/**
- * Created by vidhiraj on 12-08-2016.
- */
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder> {
-
     private ArrayList<ClassData> dataSet;
     private Context mcontext;
-    public ClassAdapter(Context mcontext,ArrayList<ClassData> data) {
+
+    public ClassAdapter(Context mcontext, ArrayList<ClassData> data) {
         this.dataSet = data;
         this.mcontext = mcontext;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-
         TextView textViewName;
         TextView textViewId;
         TextView textViewVersion;
@@ -46,25 +38,21 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String id=textViewId.getText().toString();
-                    String token=ApiKeyConstant.authToken;
-                    Intent intent=new Intent(context,CatalogSchedule.class);
-                    intent.putExtra("teach_id",id);
-                    //intent.putExtra("auth_token",token);
+                    String id = textViewId.getText().toString();
+                    String token = ApiKeyConstant.authToken;
+                    Intent intent = new Intent(context, CatalogSchedule.class);
+                    intent.putExtra("teach_id", id);
                     context.startActivity(intent);
-
                 }
             });
         }
     }
-
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent,
                                            int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.class_item, parent, false);
-
         MyViewHolder myViewHolder = new MyViewHolder(view);
         return myViewHolder;
     }
@@ -75,8 +63,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
         TextView textViewId = holder.textViewId;
         TextView textViewVersion = holder.textViewVersion;
         ImageView imageView = holder.imageViewIcon;
-
-
         textViewName.setText(dataSet.get(position).getSubject());
         textViewVersion.setText(dataSet.get(position).getName());
         textViewId.setText(Integer.toString(dataSet.get(position).getId()));
@@ -88,5 +74,4 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
         Log.e("size is", String.valueOf(dataSet.size()));
         return dataSet.size();
     }
-
 }

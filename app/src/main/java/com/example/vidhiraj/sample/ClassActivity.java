@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,11 +15,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,8 +26,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnMenuTabSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,31 +33,24 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS_NAME;
-import static com.example.vidhiraj.sample.Utils.*;
 
 /**
  * Created by vidhiraj on 12-08-2016.
  */
 public class ClassActivity extends AppCompatActivity {
-
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog" , "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
-//    String NAME = "Eracord";
-    String org=null;
+    String org = null;
     private Toolbar toolbar;                              // Declaring the Toolbar Object
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;
-    String url_icon=null;
-
+    String url_icon = null;
     private static RecyclerView.Adapter adapter;
     private static RecyclerView recyclerView;
     private static ArrayList<ClassData> data = null;
@@ -69,10 +58,6 @@ public class ClassActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     boolean mIsRefreshing = false;
     TextView dataAvailability;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
 
     @Override
@@ -81,8 +66,8 @@ public class ClassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_class);
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String user_email = prefs.getString("email", null);
-        org=prefs.getString("specificorg",null);
-        url_icon=prefs.getString("org_icon",null);
+        org = prefs.getString("specificorg", null);
+        url_icon = prefs.getString("org_icon", null);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         dataAvailability = (TextView) findViewById(R.id.nodata);
         fetchClassData();
@@ -108,24 +93,13 @@ public class ClassActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(org);
-
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-
         mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-
-        mAdapter = new EraMyAdapter(ClassActivity.this, TITLES, ICONS,user_email,url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
-        // And passing the titles,icons,header view name, header view email,
-        // and header view profile picture
-
+        mAdapter = new EraMyAdapter(ClassActivity.this, TITLES, ICONS, user_email, url_icon);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
         mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
-
         mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-
         mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
-
-
         mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
-
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -136,10 +110,7 @@ public class ClassActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
             }
-
-
         }; // Drawer Toggle Object Made
         Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
         mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
@@ -155,11 +126,9 @@ public class ClassActivity extends AppCompatActivity {
         } else {
             this.Drawer.openDrawer(GravityCompat.START);
         }
-
     }
 
     public void fetchClassData() {
-
         String loginURL = ApiKeyConstant.apiUrl + "/api/v1/time_table_classes.json";
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, loginURL, new JSONObject(), new Response.Listener<JSONObject>() {
             @Override
@@ -185,27 +154,29 @@ public class ClassActivity extends AppCompatActivity {
                             dataAvailability.setVisibility(View.VISIBLE);
                         }
                     }
-
                     recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
                     recyclerView.setHasFixedSize(true);
                     adapter = new ClassAdapter(ClassActivity.this, data);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(ClassActivity.this));
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
-
                 } catch (JSONException e) {
                     String err = (e.getMessage() == null) ? "SD Card failed" : e.getMessage();
                     Log.e("sdcard-err2:", err);
                 }
-
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
-                        Log.e("Volley", "Error");
-                        swipeRefreshLayout.setRefreshing(false);
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 401) {
+                            Intent intent = new Intent(ClassActivity.this, AndroidSpinnerExampleActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Log.e("Volley", "Error");
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                     }
                 }) {
             @Override
@@ -216,16 +187,12 @@ public class ClassActivity extends AppCompatActivity {
                 return headers;
             }
         };
-
         VolleyControl.getInstance().addToRequestQueue(jsonObjReq);
-
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -245,7 +212,6 @@ public class ClassActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(

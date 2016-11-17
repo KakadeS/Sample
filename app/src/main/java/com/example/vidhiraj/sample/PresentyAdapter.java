@@ -5,41 +5,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-/**
- * Created by lenovo on 31/08/2016.
- */
 public class PresentyAdapter extends
         RecyclerView.Adapter<PresentyAdapter.ViewHolder> {
-
     private List<PresentyData> stList;
     Context context;
 
-    public PresentyAdapter(Context context,List<PresentyData> students) {
-       this.context=context;
+    public PresentyAdapter(Context context, List<PresentyData> students) {
+        this.context = context;
         this.stList = students;
-
     }
 
-    // Create new views
     @Override
     public PresentyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                       int viewType) {
-        // create a new view
+                                                         int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.presenty_catalog_row, null);
-
-        // create ViewHolder
-
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
-
         return viewHolder;
     }
 
@@ -47,28 +34,14 @@ public class PresentyAdapter extends
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 
         final int pos = position;
-     //   final ObjectIncome objIncome = myItems.get(position);
         viewHolder.tvName.setText(stList.get(position).getName());
-      //  viewHolder.chkSelected.setChecked(stList.get(position).isSelected());
-      //  viewHolder.chkSelected.setTag(stList.get(position));
-
-
-
-
-
-        //in some cases, it will prevent unwanted situations
         viewHolder.chkSelected.setOnCheckedChangeListener(null);
-
-        //if true, your checkbox will be selected, else unselected
         viewHolder.chkSelected.setChecked(stList.get(position).isSelected());
-
         viewHolder.chkSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                {
-                }
-                else {
+                if (isChecked) {
+                } else {
                 }
             }
         });
@@ -96,7 +69,6 @@ public class PresentyAdapter extends
 
             chkSelected = (CheckBox) itemLayoutView
                     .findViewById(R.id.chkSelected);
-
 
 
         }

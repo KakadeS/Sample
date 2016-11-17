@@ -3,12 +3,8 @@ package com.example.vidhiraj.sample;
 /**
  * Created by vidhiraj on 10-08-2016.
  */
+
 import android.app.Application;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.nfc.Tag;
-import android.text.TextUtils;
-import android.util.LruCache;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;

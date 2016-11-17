@@ -22,14 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnMenuTabSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -191,8 +190,14 @@ public class StudentListActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        mProgress.dismiss();
-                        Log.e("Volley", "Error");
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 401) {
+                            Intent intent = new Intent(StudentListActivity.this, AndroidSpinnerExampleActivity.class);
+                            startActivity(intent);
+                        } else {
+                            mProgress.dismiss();
+                            Log.e("Volley", "Error");
+                        }
                     }
                 }) {
             @Override
@@ -324,9 +329,15 @@ public class StudentListActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    load.setVisibility(View.GONE);
-                                    Toast.makeText(getApplicationContext(), "No More Data to laod", Toast.LENGTH_LONG).show();
-                                    Log.e("Poonam", error.getMessage());
+                                    NetworkResponse networkResponse = error.networkResponse;
+                                    if (networkResponse != null && networkResponse.statusCode == 401) {
+                                        Intent intent = new Intent(StudentListActivity.this, AndroidSpinnerExampleActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        load.setVisibility(View.GONE);
+                                        Toast.makeText(getApplicationContext(), "No More Data to laod", Toast.LENGTH_LONG).show();
+                                        Log.e("Poonam", error.getMessage());
+                                    }
                                 }
                             }) {
                         @Override

@@ -1,14 +1,12 @@
 package com.example.vidhiraj.sample;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -27,12 +25,12 @@ public class StudentCatalogAdapter extends RecyclerView.Adapter {
     private int lastVisibleItem, totalItemCount;
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
-Context context;
+    Context context;
 
 
-    public StudentCatalogAdapter(List<StudentData> students,Context context) {
+    public StudentCatalogAdapter(List<StudentData> students, Context context) {
         studentList = students;
-        this.context=context;
+        this.context = context;
 
 //        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
 //
@@ -91,19 +89,17 @@ Context context;
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof StudentViewHolder) {
 
-            StudentData singleStudent= (StudentData) studentList.get(position);
+            StudentData singleStudent = (StudentData) studentList.get(position);
 
             ((StudentViewHolder) holder).textViewName.setText(singleStudent.getStud_name());
 
             ((StudentViewHolder) holder).textViewClass.setText(singleStudent.getStud_class_name());
 
-            ((StudentViewHolder) holder).student= singleStudent;
-            boolean hostel=singleStudent.stud_hostel;
-            if(hostel)
-            {
+            ((StudentViewHolder) holder).student = singleStudent;
+            boolean hostel = singleStudent.stud_hostel;
+            if (hostel) {
                 ((StudentViewHolder) holder).textViewHostel.setText("yes");
-            }
-            else {
+            } else {
                 ((StudentViewHolder) holder).textViewHostel.setText("no");
             }
 
@@ -125,6 +121,7 @@ Context context;
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;
     }
+
     public static class StudentViewHolder extends RecyclerView.ViewHolder {
         TextView textViewName;
         TextView textViewClass;
