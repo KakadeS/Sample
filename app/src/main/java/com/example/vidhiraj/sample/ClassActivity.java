@@ -41,7 +41,7 @@ import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS
  * Created by vidhiraj on 12-08-2016.
  */
 public class ClassActivity extends AppCompatActivity {
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Students", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     String org = null;
     private Toolbar toolbar;                              // Declaring the Toolbar Object

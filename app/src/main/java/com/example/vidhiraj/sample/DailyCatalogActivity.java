@@ -37,7 +37,7 @@ import java.util.Map;
 import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS_NAME;
 
 public class DailyCatalogActivity extends AppCompatActivity {
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Students", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     String org = null;
     int PROFILE = R.drawable.ic_photos;

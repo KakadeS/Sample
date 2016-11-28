@@ -54,7 +54,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
     ProgressDialog mProgress;
     TextView date_selected;
     int day, month, year;
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Students", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     String org = null;
     int PROFILE = R.drawable.ic_photos;
@@ -82,7 +82,7 @@ public class DailyTeachingActivity extends AppCompatActivity implements AdapterV
         day = intent.getIntExtra("day", 0);
         month = intent.getIntExtra("month", 0);
         year = intent.getIntExtra("year", 0);
-        date_selected.setText("Date is : " + day + " / " + (month + 1) + " / " + year);
+        date_selected.setText(day + " / " + (month + 1) + " / " + year);
         Log.e("getchap", String.valueOf(classid));
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);

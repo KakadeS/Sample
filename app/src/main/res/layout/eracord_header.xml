@@ -25,7 +25,7 @@
             android:layout_marginTop="5dp"
             android:text="abc@gmail.com"
             android:textSize="14sp"
-            android:textStyle="normal"
+            android:textStyle="bold"
 
             />
     </LinearLayout>

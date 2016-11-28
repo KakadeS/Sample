@@ -24,7 +24,7 @@ import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS
 public class CatalogSchedule extends AppCompatActivity {
     CalendarView calender;
 
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Students", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     //String NAME = "Eracord";
     String org = null;

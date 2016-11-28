@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     new ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getBaseContext(),"error", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(),error.getMessage(), Toast.LENGTH_LONG).show();
                             mProgress.dismiss();
                         }
                     }

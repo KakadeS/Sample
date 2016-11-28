@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,7 +47,7 @@ import static com.example.vidhiraj.sample.AndroidSpinnerExampleActivity.MY_PREFS
  */
 public class StudentListActivity extends AppCompatActivity {
 
-    String TITLES[] = {"Home", "Daily Catalog", "Student Catalog", "Logout"};
+    String TITLES[] = {"Home", "Daily Catalog", "Students", "Logout"};
     int ICONS[] = {R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos, R.drawable.ic_photos};
     //String NAME = "Eracord";
     String org = null;
@@ -77,7 +78,7 @@ public class StudentListActivity extends AppCompatActivity {
 
     String url = ApiKeyConstant.apiUrl + "/api/v1/students";
     protected Handler handler;
-
+    NestedScrollView scrollview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +87,7 @@ public class StudentListActivity extends AppCompatActivity {
         // tvEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         dataAvailability = (TextView) findViewById(R.id.nodata);
-
+        scrollview = ((NestedScrollView) findViewById(R.id.scrollView));
         mProgress = new ProgressDialog(this);
         mProgress.setTitle("Processing...");
         mProgress.setMessage("Please wait...");
@@ -311,12 +312,18 @@ public class StudentListActivity extends AppCompatActivity {
                                         Log.e("data is", String.valueOf(dailyTeach));
                                         mAdapter.notifyItemInserted(dailyTeach.size());
                                     }
+                                    scrollview.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            int x=0,y=10;
+                                            scrollview.scrollTo(x,y);
+                                        }
+                                    });
                                     if (arrayLength == 0) {
                                         load.setVisibility(View.GONE);
+                                        mProgress.dismiss();
                                         Toast.makeText(getApplicationContext(), "No More Data to laod", Toast.LENGTH_LONG).show();
                                     }
-
-
                                 }
 
                             } catch (JSONException e) {
@@ -335,8 +342,9 @@ public class StudentListActivity extends AppCompatActivity {
                                         startActivity(intent);
                                     } else {
                                         load.setVisibility(View.GONE);
+                                        mProgress.dismiss();
                                         Toast.makeText(getApplicationContext(), "No More Data to laod", Toast.LENGTH_LONG).show();
-                                        Log.e("Poonam", error.getMessage());
+                                     //   Log.e("Poonam", error.getMessage());
                                     }
                                 }
                             }) {
